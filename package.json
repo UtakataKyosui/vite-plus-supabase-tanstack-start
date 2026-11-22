@@ -7,9 +7,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "vp dev",
-    "build": "vp build && tsc --noEmit",
-    "preview": "vp preview",
+    "dev": "dotenvx run -- vp dev",
+    "build": "dotenvx run -- vp build && tsc --noEmit",
+    "preview": "dotenvx run -- vp preview",
     "start": "pnpx srvx --prod -s ../client dist/server/server.js",
     "prepare": "vp config"
   },
@@ -24,7 +24,9 @@
     "redaxios": "^0.5.1"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^2.38.2",
     "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@typescript/native": "npm:typescript@^7.0.2",

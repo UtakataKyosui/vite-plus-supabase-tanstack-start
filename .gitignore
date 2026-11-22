@@ -17,3 +17,6 @@ yarn.lock
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# dotenvx private keys
+.env.keys
