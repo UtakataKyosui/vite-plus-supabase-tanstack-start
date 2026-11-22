@@ -1,17 +1,18 @@
 {
   "name": "tanstack-start-example-supabase-basic",
   "private": true,
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
-    "preview": "vite preview",
-    "start": "pnpx srvx --prod -s ../client dist/server/server.js"
-  },
   "keywords": [],
-  "author": "",
   "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build && tsc --noEmit",
+    "preview": "vp preview",
+    "start": "pnpx srvx --prod -s ../client dist/server/server.js",
+    "prepare": "vp config"
+  },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
@@ -26,10 +27,18 @@
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^6.0.1",
     "tailwindcss": "^4.2.2",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vite": "^8.0.14"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.21.0",
+      "onFail": "download"
+    }
   }
 }
