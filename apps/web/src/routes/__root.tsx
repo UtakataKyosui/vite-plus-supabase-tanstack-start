@@ -1,18 +1,11 @@
 /// <reference types="vite/client" />
 import type { QueryClient } from "@tanstack/react-query";
-import {
-  HeadContent,
-  Link,
-  Outlet,
-  Scripts,
-  createRootRouteWithContext,
-} from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
 import { NotFound } from "../components/NotFound";
-import { ModeToggle } from "../components/mode-toggle";
 import { ThemeProvider } from "../components/theme-provider";
 import appCss from "../styles/app.css?url";
 import { seo } from "../utils/seo";
@@ -96,8 +89,6 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { user } = Route.useRouteContext();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -105,37 +96,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
-          <div className="p-2 flex gap-2 text-lg">
-            <Link
-              to="/"
-              activeProps={{
-                className: "font-bold",
-              }}
-              activeOptions={{ exact: true }}
-            >
-              Home
-            </Link>{" "}
-            <Link
-              to="/posts"
-              activeProps={{
-                className: "font-bold",
-              }}
-            >
-              Posts
-            </Link>
-            <div className="ml-auto flex items-center gap-2">
-              <ModeToggle />
-              {user ? (
-                <>
-                  <span className="mr-2">{user.email}</span>
-                  <Link to="/logout">Logout</Link>
-                </>
-              ) : (
-                <Link to="/login">Login</Link>
-              )}
-            </div>
-          </div>
-          <hr />
           {children}
           <TanStackRouterDevtools position="bottom-right" />
         </ThemeProvider>

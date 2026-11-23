@@ -14,9 +14,22 @@ import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as AuthedPostsRouteImport } from './routes/_authed/posts'
-import { Route as AuthedPostsIndexRouteImport } from './routes/_authed/posts.index'
-import { Route as AuthedPostsPostIdRouteImport } from './routes/_authed/posts.$postId'
+import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as AuthedEntityTypesRouteImport } from './routes/_authed/entity-types'
+import { Route as AuthedGroupRouteImport } from './routes/_authed/group'
+import { Route as AuthedItemTemplatesRouteImport } from './routes/_authed/item-templates'
+import { Route as AuthedMaintenanceRouteImport } from './routes/_authed/maintenance'
+import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
+import { Route as AuthedScanRouteImport } from './routes/_authed/scan'
+import { Route as AuthedTagsRouteImport } from './routes/_authed/tags'
+import { Route as AuthedToolsRouteImport } from './routes/_authed/tools'
+import { Route as AuthedItemsIndexRouteImport } from './routes/_authed/items.index'
+import { Route as AuthedItemsItemIdRouteImport } from './routes/_authed/items.$itemId'
+import { Route as AuthedItemsNewRouteImport } from './routes/_authed/items.new'
+import { Route as AuthedLabelTemplatesIndexRouteImport } from './routes/_authed/label-templates.index'
+import { Route as AuthedLabelTemplatesTemplateIdRouteImport } from './routes/_authed/label-templates.$templateId'
+import { Route as AuthedLocationsIndexRouteImport } from './routes/_authed/locations.index'
+import { Route as AuthedLocationsLocationIdRouteImport } from './routes/_authed/locations.$locationId'
 import { Route as ApiV1StatusRouteImport } from './routes/api/v1/status'
 import { Route as ApiV1UsersSelfApiKeysIndexRouteImport } from './routes/api/v1/users/self/api-keys/index'
 import { Route as ApiV1UsersSelfApiKeysIdRouteImport } from './routes/api/v1/users/self/api-keys/$id'
@@ -45,21 +58,89 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthedPostsRoute = AuthedPostsRouteImport.update({
-  id: '/posts',
-  path: '/posts',
+const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthedRoute,
 } as any)
-const AuthedPostsIndexRoute = AuthedPostsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthedPostsRoute,
+const AuthedEntityTypesRoute = AuthedEntityTypesRouteImport.update({
+  id: '/entity-types',
+  path: '/entity-types',
+  getParentRoute: () => AuthedRoute,
 } as any)
-const AuthedPostsPostIdRoute = AuthedPostsPostIdRouteImport.update({
-  id: '/$postId',
-  path: '/$postId',
-  getParentRoute: () => AuthedPostsRoute,
+const AuthedGroupRoute = AuthedGroupRouteImport.update({
+  id: '/group',
+  path: '/group',
+  getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedItemTemplatesRoute = AuthedItemTemplatesRouteImport.update({
+  id: '/item-templates',
+  path: '/item-templates',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedMaintenanceRoute = AuthedMaintenanceRouteImport.update({
+  id: '/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedProfileRoute = AuthedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedScanRoute = AuthedScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedTagsRoute = AuthedTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedToolsRoute = AuthedToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedItemsIndexRoute = AuthedItemsIndexRouteImport.update({
+  id: '/items/',
+  path: '/items/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedItemsItemIdRoute = AuthedItemsItemIdRouteImport.update({
+  id: '/items/$itemId',
+  path: '/items/$itemId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedItemsNewRoute = AuthedItemsNewRouteImport.update({
+  id: '/items/new',
+  path: '/items/new',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedLabelTemplatesIndexRoute =
+  AuthedLabelTemplatesIndexRouteImport.update({
+    id: '/label-templates/',
+    path: '/label-templates/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedLabelTemplatesTemplateIdRoute =
+  AuthedLabelTemplatesTemplateIdRouteImport.update({
+    id: '/label-templates/$templateId',
+    path: '/label-templates/$templateId',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedLocationsIndexRoute = AuthedLocationsIndexRouteImport.update({
+  id: '/locations/',
+  path: '/locations/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedLocationsLocationIdRoute =
+  AuthedLocationsLocationIdRouteImport.update({
+    id: '/locations/$locationId',
+    path: '/locations/$locationId',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 const ApiV1StatusRoute = ApiV1StatusRouteImport.update({
   id: '/api/v1/status',
   path: '/api/v1/status',
@@ -82,10 +163,23 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/posts': typeof AuthedPostsRouteWithChildren
-  '/posts/$postId': typeof AuthedPostsPostIdRoute
+  '/dashboard': typeof AuthedDashboardRoute
+  '/entity-types': typeof AuthedEntityTypesRoute
+  '/group': typeof AuthedGroupRoute
+  '/item-templates': typeof AuthedItemTemplatesRoute
+  '/maintenance': typeof AuthedMaintenanceRoute
+  '/profile': typeof AuthedProfileRoute
+  '/scan': typeof AuthedScanRoute
+  '/tags': typeof AuthedTagsRoute
+  '/tools': typeof AuthedToolsRoute
+  '/items/$itemId': typeof AuthedItemsItemIdRoute
+  '/items/new': typeof AuthedItemsNewRoute
+  '/label-templates/$templateId': typeof AuthedLabelTemplatesTemplateIdRoute
+  '/locations/$locationId': typeof AuthedLocationsLocationIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
-  '/posts/': typeof AuthedPostsIndexRoute
+  '/items/': typeof AuthedItemsIndexRoute
+  '/label-templates/': typeof AuthedLabelTemplatesIndexRoute
+  '/locations/': typeof AuthedLocationsIndexRoute
   '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
   '/api/v1/users/self/api-keys/': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
@@ -94,9 +188,23 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/posts/$postId': typeof AuthedPostsPostIdRoute
+  '/dashboard': typeof AuthedDashboardRoute
+  '/entity-types': typeof AuthedEntityTypesRoute
+  '/group': typeof AuthedGroupRoute
+  '/item-templates': typeof AuthedItemTemplatesRoute
+  '/maintenance': typeof AuthedMaintenanceRoute
+  '/profile': typeof AuthedProfileRoute
+  '/scan': typeof AuthedScanRoute
+  '/tags': typeof AuthedTagsRoute
+  '/tools': typeof AuthedToolsRoute
+  '/items/$itemId': typeof AuthedItemsItemIdRoute
+  '/items/new': typeof AuthedItemsNewRoute
+  '/label-templates/$templateId': typeof AuthedLabelTemplatesTemplateIdRoute
+  '/locations/$locationId': typeof AuthedLocationsLocationIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
-  '/posts': typeof AuthedPostsIndexRoute
+  '/items': typeof AuthedItemsIndexRoute
+  '/label-templates': typeof AuthedLabelTemplatesIndexRoute
+  '/locations': typeof AuthedLocationsIndexRoute
   '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
   '/api/v1/users/self/api-keys': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
@@ -107,10 +215,23 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/_authed/posts': typeof AuthedPostsRouteWithChildren
-  '/_authed/posts/$postId': typeof AuthedPostsPostIdRoute
+  '/_authed/dashboard': typeof AuthedDashboardRoute
+  '/_authed/entity-types': typeof AuthedEntityTypesRoute
+  '/_authed/group': typeof AuthedGroupRoute
+  '/_authed/item-templates': typeof AuthedItemTemplatesRoute
+  '/_authed/maintenance': typeof AuthedMaintenanceRoute
+  '/_authed/profile': typeof AuthedProfileRoute
+  '/_authed/scan': typeof AuthedScanRoute
+  '/_authed/tags': typeof AuthedTagsRoute
+  '/_authed/tools': typeof AuthedToolsRoute
+  '/_authed/items/$itemId': typeof AuthedItemsItemIdRoute
+  '/_authed/items/new': typeof AuthedItemsNewRoute
+  '/_authed/label-templates/$templateId': typeof AuthedLabelTemplatesTemplateIdRoute
+  '/_authed/locations/$locationId': typeof AuthedLocationsLocationIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
-  '/_authed/posts/': typeof AuthedPostsIndexRoute
+  '/_authed/items/': typeof AuthedItemsIndexRoute
+  '/_authed/label-templates/': typeof AuthedLabelTemplatesIndexRoute
+  '/_authed/locations/': typeof AuthedLocationsIndexRoute
   '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
   '/api/v1/users/self/api-keys/': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
@@ -121,10 +242,23 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
-    | '/posts'
-    | '/posts/$postId'
+    | '/dashboard'
+    | '/entity-types'
+    | '/group'
+    | '/item-templates'
+    | '/maintenance'
+    | '/profile'
+    | '/scan'
+    | '/tags'
+    | '/tools'
+    | '/items/$itemId'
+    | '/items/new'
+    | '/label-templates/$templateId'
+    | '/locations/$locationId'
     | '/api/v1/status'
-    | '/posts/'
+    | '/items/'
+    | '/label-templates/'
+    | '/locations/'
     | '/api/v1/users/self/api-keys/$id'
     | '/api/v1/users/self/api-keys/'
   fileRoutesByTo: FileRoutesByTo
@@ -133,9 +267,23 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
-    | '/posts/$postId'
+    | '/dashboard'
+    | '/entity-types'
+    | '/group'
+    | '/item-templates'
+    | '/maintenance'
+    | '/profile'
+    | '/scan'
+    | '/tags'
+    | '/tools'
+    | '/items/$itemId'
+    | '/items/new'
+    | '/label-templates/$templateId'
+    | '/locations/$locationId'
     | '/api/v1/status'
-    | '/posts'
+    | '/items'
+    | '/label-templates'
+    | '/locations'
     | '/api/v1/users/self/api-keys/$id'
     | '/api/v1/users/self/api-keys'
   id:
@@ -145,10 +293,23 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
-    | '/_authed/posts'
-    | '/_authed/posts/$postId'
+    | '/_authed/dashboard'
+    | '/_authed/entity-types'
+    | '/_authed/group'
+    | '/_authed/item-templates'
+    | '/_authed/maintenance'
+    | '/_authed/profile'
+    | '/_authed/scan'
+    | '/_authed/tags'
+    | '/_authed/tools'
+    | '/_authed/items/$itemId'
+    | '/_authed/items/new'
+    | '/_authed/label-templates/$templateId'
+    | '/_authed/locations/$locationId'
     | '/api/v1/status'
-    | '/_authed/posts/'
+    | '/_authed/items/'
+    | '/_authed/label-templates/'
+    | '/_authed/locations/'
     | '/api/v1/users/self/api-keys/$id'
     | '/api/v1/users/self/api-keys/'
   fileRoutesById: FileRoutesById
@@ -201,26 +362,117 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authed/posts': {
-      id: '/_authed/posts'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof AuthedPostsRouteImport
+    '/_authed/dashboard': {
+      id: '/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthedDashboardRouteImport
       parentRoute: typeof AuthedRoute
     }
-    '/_authed/posts/': {
-      id: '/_authed/posts/'
-      path: '/'
-      fullPath: '/posts/'
-      preLoaderRoute: typeof AuthedPostsIndexRouteImport
-      parentRoute: typeof AuthedPostsRoute
+    '/_authed/entity-types': {
+      id: '/_authed/entity-types'
+      path: '/entity-types'
+      fullPath: '/entity-types'
+      preLoaderRoute: typeof AuthedEntityTypesRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/_authed/posts/$postId': {
-      id: '/_authed/posts/$postId'
-      path: '/$postId'
-      fullPath: '/posts/$postId'
-      preLoaderRoute: typeof AuthedPostsPostIdRouteImport
-      parentRoute: typeof AuthedPostsRoute
+    '/_authed/group': {
+      id: '/_authed/group'
+      path: '/group'
+      fullPath: '/group'
+      preLoaderRoute: typeof AuthedGroupRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/item-templates': {
+      id: '/_authed/item-templates'
+      path: '/item-templates'
+      fullPath: '/item-templates'
+      preLoaderRoute: typeof AuthedItemTemplatesRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/maintenance': {
+      id: '/_authed/maintenance'
+      path: '/maintenance'
+      fullPath: '/maintenance'
+      preLoaderRoute: typeof AuthedMaintenanceRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/profile': {
+      id: '/_authed/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthedProfileRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/scan': {
+      id: '/_authed/scan'
+      path: '/scan'
+      fullPath: '/scan'
+      preLoaderRoute: typeof AuthedScanRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/tags': {
+      id: '/_authed/tags'
+      path: '/tags'
+      fullPath: '/tags'
+      preLoaderRoute: typeof AuthedTagsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/tools': {
+      id: '/_authed/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof AuthedToolsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/items/': {
+      id: '/_authed/items/'
+      path: '/items'
+      fullPath: '/items/'
+      preLoaderRoute: typeof AuthedItemsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/items/$itemId': {
+      id: '/_authed/items/$itemId'
+      path: '/items/$itemId'
+      fullPath: '/items/$itemId'
+      preLoaderRoute: typeof AuthedItemsItemIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/items/new': {
+      id: '/_authed/items/new'
+      path: '/items/new'
+      fullPath: '/items/new'
+      preLoaderRoute: typeof AuthedItemsNewRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/label-templates/': {
+      id: '/_authed/label-templates/'
+      path: '/label-templates'
+      fullPath: '/label-templates/'
+      preLoaderRoute: typeof AuthedLabelTemplatesIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/label-templates/$templateId': {
+      id: '/_authed/label-templates/$templateId'
+      path: '/label-templates/$templateId'
+      fullPath: '/label-templates/$templateId'
+      preLoaderRoute: typeof AuthedLabelTemplatesTemplateIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/locations/': {
+      id: '/_authed/locations/'
+      path: '/locations'
+      fullPath: '/locations/'
+      preLoaderRoute: typeof AuthedLocationsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/locations/$locationId': {
+      id: '/_authed/locations/$locationId'
+      path: '/locations/$locationId'
+      fullPath: '/locations/$locationId'
+      preLoaderRoute: typeof AuthedLocationsLocationIdRouteImport
+      parentRoute: typeof AuthedRoute
     }
     '/api/v1/status': {
       id: '/api/v1/status'
@@ -246,26 +498,42 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthedPostsRouteChildren {
-  AuthedPostsPostIdRoute: typeof AuthedPostsPostIdRoute
-  AuthedPostsIndexRoute: typeof AuthedPostsIndexRoute
-}
-
-const AuthedPostsRouteChildren: AuthedPostsRouteChildren = {
-  AuthedPostsPostIdRoute: AuthedPostsPostIdRoute,
-  AuthedPostsIndexRoute: AuthedPostsIndexRoute,
-}
-
-const AuthedPostsRouteWithChildren = AuthedPostsRoute._addFileChildren(
-  AuthedPostsRouteChildren,
-)
-
 interface AuthedRouteChildren {
-  AuthedPostsRoute: typeof AuthedPostsRouteWithChildren
+  AuthedDashboardRoute: typeof AuthedDashboardRoute
+  AuthedEntityTypesRoute: typeof AuthedEntityTypesRoute
+  AuthedGroupRoute: typeof AuthedGroupRoute
+  AuthedItemTemplatesRoute: typeof AuthedItemTemplatesRoute
+  AuthedMaintenanceRoute: typeof AuthedMaintenanceRoute
+  AuthedProfileRoute: typeof AuthedProfileRoute
+  AuthedScanRoute: typeof AuthedScanRoute
+  AuthedTagsRoute: typeof AuthedTagsRoute
+  AuthedToolsRoute: typeof AuthedToolsRoute
+  AuthedItemsItemIdRoute: typeof AuthedItemsItemIdRoute
+  AuthedItemsNewRoute: typeof AuthedItemsNewRoute
+  AuthedLabelTemplatesTemplateIdRoute: typeof AuthedLabelTemplatesTemplateIdRoute
+  AuthedLocationsLocationIdRoute: typeof AuthedLocationsLocationIdRoute
+  AuthedItemsIndexRoute: typeof AuthedItemsIndexRoute
+  AuthedLabelTemplatesIndexRoute: typeof AuthedLabelTemplatesIndexRoute
+  AuthedLocationsIndexRoute: typeof AuthedLocationsIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
-  AuthedPostsRoute: AuthedPostsRouteWithChildren,
+  AuthedDashboardRoute: AuthedDashboardRoute,
+  AuthedEntityTypesRoute: AuthedEntityTypesRoute,
+  AuthedGroupRoute: AuthedGroupRoute,
+  AuthedItemTemplatesRoute: AuthedItemTemplatesRoute,
+  AuthedMaintenanceRoute: AuthedMaintenanceRoute,
+  AuthedProfileRoute: AuthedProfileRoute,
+  AuthedScanRoute: AuthedScanRoute,
+  AuthedTagsRoute: AuthedTagsRoute,
+  AuthedToolsRoute: AuthedToolsRoute,
+  AuthedItemsItemIdRoute: AuthedItemsItemIdRoute,
+  AuthedItemsNewRoute: AuthedItemsNewRoute,
+  AuthedLabelTemplatesTemplateIdRoute: AuthedLabelTemplatesTemplateIdRoute,
+  AuthedLocationsLocationIdRoute: AuthedLocationsLocationIdRoute,
+  AuthedItemsIndexRoute: AuthedItemsIndexRoute,
+  AuthedLabelTemplatesIndexRoute: AuthedLabelTemplatesIndexRoute,
+  AuthedLocationsIndexRoute: AuthedLocationsIndexRoute,
 }
 
 const AuthedRouteWithChildren =

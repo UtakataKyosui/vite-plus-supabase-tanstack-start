@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { AppLayout } from "../components/layout/app-layout";
 import { Login } from "../components/Login";
 import { getSupabaseServerClient } from "../utils/supabase";
 
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/_authed")({
       throw new Error("Not authenticated");
     }
   },
+  component: AuthedLayout,
   errorComponent: ({ error }) => {
     if (error instanceof Error && error.message === "Not authenticated") {
       return <Login />;
@@ -34,3 +36,13 @@ export const Route = createFileRoute("/_authed")({
     throw error;
   },
 });
+
+function AuthedLayout() {
+  const { user } = Route.useRouteContext();
+
+  return (
+    <AppLayout email={user?.email ?? ""}>
+      <Outlet />
+    </AppLayout>
+  );
+}
