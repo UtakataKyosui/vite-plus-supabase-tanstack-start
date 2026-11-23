@@ -1,5 +1,6 @@
-import { getCookies, setCookie } from "@tanstack/react-start/server";
-import { createServerClient } from "@supabase/ssr";
+import { getCookies, getRequest, setCookie } from "@tanstack/react-start/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { hardenCookieOptions, isSecureRequest } from "./cookie-options";
 
 export function getSupabaseServerClient() {
   return createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
@@ -10,9 +11,10 @@ export function getSupabaseServerClient() {
           value,
         }));
       },
-      setAll(cookies: { name: string; value: string }[]) {
-        cookies.forEach((cookie) => {
-          setCookie(cookie.name, cookie.value);
+      setAll(cookies: { name: string; value: string; options: CookieOptions }[]) {
+        const secure = isSecureRequest(getRequest());
+        cookies.forEach(({ name, value, options }) => {
+          setCookie(name, value, hardenCookieOptions(options, secure));
         });
       },
     },

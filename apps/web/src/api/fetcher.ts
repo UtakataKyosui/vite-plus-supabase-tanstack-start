@@ -1,5 +1,5 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { appendResponseHeader, getRequest } from "@tanstack/react-start/server";
 
 const API_PREFIX = "/api";
 
@@ -27,12 +27,23 @@ const buildRequest = createIsomorphicFn()
     if (cookie && !headers.has("cookie")) headers.set("cookie", cookie);
 
     const origin = new URL(incoming.url).origin;
+    if (!headers.has("origin")) headers.set("origin", origin);
     return [`${origin}${API_PREFIX}${url}`, { ...options, headers }];
   })
   .client((url: string, options: RequestInit): [string, RequestInit] => [
     `${API_PREFIX}${url}`,
     { ...options, credentials: "include" },
   ]);
+
+// A token refreshed while serving the loopback request would otherwise be lost,
+// because its Set-Cookie only reaches this server, not the browser.
+const forwardSetCookie = createIsomorphicFn()
+  .server((response: Response) => {
+    for (const cookie of response.headers.getSetCookie()) {
+      appendResponseHeader("set-cookie", cookie);
+    }
+  })
+  .client((_response: Response) => {});
 
 async function parseBody(response: Response): Promise<unknown> {
   if (response.status === 204) return undefined;
@@ -45,6 +56,7 @@ async function parseBody(response: Response): Promise<unknown> {
 
 export async function apiFetch<T>(url: string, options: RequestInit): Promise<T> {
   const response = await fetch(...buildRequest(url, options));
+  forwardSetCookie(response);
   const body = await parseBody(response);
 
   if (!response.ok) throw new ApiError(response.status, body);

@@ -45,3 +45,9 @@ tasks:
     command: "vp run check:all"
     options:
       cache: false
+
+  test:
+    command: "vp run test"
+    inputs:
+      - "src/**/*"
+      - "package.json"

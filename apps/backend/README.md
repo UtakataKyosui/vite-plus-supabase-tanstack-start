@@ -92,19 +92,38 @@ moon run backend:generate-schemas web:generate-api
 
 ## 方針
 
-| 項目     | 決定                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| DB       | Supabase Postgres                                                                                                                   |
-| 認証     | ブラウザは `@supabase/ssr` のセッション Cookie、外部クライアントは API キー。変更系の要求は `Origin` を検証する                     |
-| API キー | 平文では保存せず、ハッシュと識別用の先頭文字だけを保存する。発行時に 1 回だけ表示する。テナント、スコープ、期限、最終使用日時を持つ |
-| 通知     | リアルタイム配信は入れない。必要になったらブラウザから Supabase Realtime を直接購読する                                             |
-| 名前     | Smart Box                                                                                                                           |
+| 項目     | 決定                                                                                                                                                                            |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DB       | Supabase Postgres                                                                                                                                                               |
+| 認証     | ブラウザは `@supabase/ssr` のセッション Cookie、外部クライアントは API キー。変更系の要求は `Origin` を検証する                                                                 |
+| API キー | 平文では保存せず、ハッシュと識別用の先頭文字だけを保存する。発行時に 1 回だけ表示する。テナント、期限、最終使用日時、失効日時を持つ。権限判定はアプリ層で行い、RLS には頼らない |
+| 通知     | リアルタイム配信は入れない。必要になったらブラウザから Supabase Realtime を直接購読する                                                                                         |
+| 名前     | Smart Box                                                                                                                                                                       |
+
+## 認証アダプタ
+
+実装は `apps/web/src/server/auth.ts`。server route を `withAuth(["session", "apiKey"], handler)` で包む。
+
+| 要求                                     | 結果                                                                                               |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `Authorization: Bearer` あり             | API キーとして検証する。Cookie には切り替えない。`allow` に `apiKey` が無ければ 401                |
+| Bearer なし、POST / PUT / PATCH / DELETE | `Origin` が自分のオリジン（または `ALLOWED_ORIGINS`）と一致しなければ 403。`Origin` が無くても 403 |
+| Bearer なし                              | Cookie のセッションを `getUser()` で検証する。失敗すれば 401                                       |
+| 認証に失敗した、または設定が足りない     | 401 または 500。許可はしない                                                                       |
+
+- Cookie は HttpOnly、SameSite=Lax、パス `/`。HTTPS（または `X-Forwarded-Proto: https`）のときだけ Secure を付ける。ログインとサインアップは server function 経由で、ブラウザ用の Supabase クライアントは使っていない
+- セッションの更新で発行された Cookie は、`withAuth` が応答の `Set-Cookie` に付ける
+- SSR の loader から呼ぶ fetcher は、`Origin` を自分のオリジンにして送る。折り返しの応答の `Set-Cookie` は、元のページ応答に引き継ぐ
+- API キーの管理（`/v1/users/self/api-keys`）は `["session"]` だけ。キーでキーは作れない
+- API キーは `sbx_` + 43 文字。テーブルは `supabase/migrations/20261124000000_create_api_keys.sql`。サービスロールで読み書きし、クエリは必ず呼び出し元で絞る
+
+必要な環境変数: `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY`（API キーの検索と管理に使う）。公開 URL が内部 URL と違う場合は `ALLOWED_ORIGINS` にカンマ区切りで足す。
 
 ## 未決事項
 
-- 認証アダプタ: server routes で Cookie と API キーを受け、Cookie は `getUser()`（または `getClaims()`）で検証する。最初の認証付き operation と一緒に作る
-- Cookie を HttpOnly にするか。`@supabase/ssr` のブラウザクライアントは Cookie を JS から読む前提で、標準では HttpOnly にならない。HttpOnly にするには、ログインを server function 経由にして Cookie をサーバー側で書く
-- API キーの権限判定: API キーの呼び出しにはユーザーの JWT が無く、`auth.uid()` を使う RLS が効かない。アプリ層で `tenant_id` を必ず絞る（リポジトリ層に集約する）か、キーから短命の JWT を発行して RLS を使うか
+- テナントの解決: `X-Tenant` の所属確認には、コレクションとメンバーのテーブルが要る。今は API キーが作成時に決めたテナントを持つ前提だけ作ってある（`tenant_id` は空のまま）
+- API キーのスコープ（読み取り専用など）。今は持ち主と同じ権限になる
+- 認証の更新: 今はセッションの検証に `getUser()` を使っていて、要求ごとに Supabase Auth への問い合わせが入る。重ければ `getClaims()` に変える
 - 添付ファイルの配信: Storage の署名付き URL に置き換えるか（`<img src>` では Authorization ヘッダを付けられない）
 - 対象範囲を家財以外に広げるときの `entity` / `entity_type` の扱い
 - スペックを自分のドメインに書き換えたあと、`info.contact`、`info.license`、冒頭の Homebox 由来の説明、このファイルの Homebox 由来の記述を外すか。Homebox のライセンスは AGPL-3.0 で、現状のスペックは Homebox のルートとスキーマを写したもの

@@ -18,6 +18,8 @@ import { Route as AuthedPostsRouteImport } from './routes/_authed/posts'
 import { Route as AuthedPostsIndexRouteImport } from './routes/_authed/posts.index'
 import { Route as AuthedPostsPostIdRouteImport } from './routes/_authed/posts.$postId'
 import { Route as ApiV1StatusRouteImport } from './routes/api/v1/status'
+import { Route as ApiV1UsersSelfApiKeysIndexRouteImport } from './routes/api/v1/users/self/api-keys/index'
+import { Route as ApiV1UsersSelfApiKeysIdRouteImport } from './routes/api/v1/users/self/api-keys/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,6 +65,17 @@ const ApiV1StatusRoute = ApiV1StatusRouteImport.update({
   path: '/api/v1/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1UsersSelfApiKeysIndexRoute =
+  ApiV1UsersSelfApiKeysIndexRouteImport.update({
+    id: '/api/v1/users/self/api-keys/',
+    path: '/api/v1/users/self/api-keys/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1UsersSelfApiKeysIdRoute = ApiV1UsersSelfApiKeysIdRouteImport.update({
+  id: '/api/v1/users/self/api-keys/$id',
+  path: '/api/v1/users/self/api-keys/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +86,8 @@ export interface FileRoutesByFullPath {
   '/posts/$postId': typeof AuthedPostsPostIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
   '/posts/': typeof AuthedPostsIndexRoute
+  '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
+  '/api/v1/users/self/api-keys/': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,6 +97,8 @@ export interface FileRoutesByTo {
   '/posts/$postId': typeof AuthedPostsPostIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
   '/posts': typeof AuthedPostsIndexRoute
+  '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
+  '/api/v1/users/self/api-keys': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,6 +111,8 @@ export interface FileRoutesById {
   '/_authed/posts/$postId': typeof AuthedPostsPostIdRoute
   '/api/v1/status': typeof ApiV1StatusRoute
   '/_authed/posts/': typeof AuthedPostsIndexRoute
+  '/api/v1/users/self/api-keys/$id': typeof ApiV1UsersSelfApiKeysIdRoute
+  '/api/v1/users/self/api-keys/': typeof ApiV1UsersSelfApiKeysIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,6 +125,8 @@ export interface FileRouteTypes {
     | '/posts/$postId'
     | '/api/v1/status'
     | '/posts/'
+    | '/api/v1/users/self/api-keys/$id'
+    | '/api/v1/users/self/api-keys/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -115,6 +136,8 @@ export interface FileRouteTypes {
     | '/posts/$postId'
     | '/api/v1/status'
     | '/posts'
+    | '/api/v1/users/self/api-keys/$id'
+    | '/api/v1/users/self/api-keys'
   id:
     | '__root__'
     | '/'
@@ -126,6 +149,8 @@ export interface FileRouteTypes {
     | '/_authed/posts/$postId'
     | '/api/v1/status'
     | '/_authed/posts/'
+    | '/api/v1/users/self/api-keys/$id'
+    | '/api/v1/users/self/api-keys/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,6 +160,8 @@ export interface RootRouteChildren {
   LogoutRoute: typeof LogoutRoute
   SignupRoute: typeof SignupRoute
   ApiV1StatusRoute: typeof ApiV1StatusRoute
+  ApiV1UsersSelfApiKeysIdRoute: typeof ApiV1UsersSelfApiKeysIdRoute
+  ApiV1UsersSelfApiKeysIndexRoute: typeof ApiV1UsersSelfApiKeysIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -202,6 +229,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/users/self/api-keys/': {
+      id: '/api/v1/users/self/api-keys/'
+      path: '/api/v1/users/self/api-keys'
+      fullPath: '/api/v1/users/self/api-keys/'
+      preLoaderRoute: typeof ApiV1UsersSelfApiKeysIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/users/self/api-keys/$id': {
+      id: '/api/v1/users/self/api-keys/$id'
+      path: '/api/v1/users/self/api-keys/$id'
+      fullPath: '/api/v1/users/self/api-keys/$id'
+      preLoaderRoute: typeof ApiV1UsersSelfApiKeysIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -237,6 +278,8 @@ const rootRouteChildren: RootRouteChildren = {
   LogoutRoute: LogoutRoute,
   SignupRoute: SignupRoute,
   ApiV1StatusRoute: ApiV1StatusRoute,
+  ApiV1UsersSelfApiKeysIdRoute: ApiV1UsersSelfApiKeysIdRoute,
+  ApiV1UsersSelfApiKeysIndexRoute: ApiV1UsersSelfApiKeysIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
