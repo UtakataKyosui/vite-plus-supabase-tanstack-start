@@ -1,7 +1,7 @@
-import { redirect, createFileRoute } from "@tanstack/react-router";
+import { Link, redirect, createFileRoute } from "@tanstack/react-router";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { useMutation } from "../hooks/useMutation";
-import { Auth } from "../components/Auth";
+import { Auth } from "../components/auth/auth-card";
 import { getSupabaseServerClient } from "../utils/supabase";
 
 export const signupFn = createServerFn({ method: "POST" })
@@ -36,7 +36,17 @@ function SignupComp() {
 
   return (
     <Auth
-      actionText="Sign Up"
+      actionText="Sign up"
+      description="Create an account to start tracking your items."
+      autoComplete="new-password"
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link to="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+            Sign in
+          </Link>
+        </>
+      }
       status={signupMutation.status}
       onSubmit={(e) => {
         const formData = new FormData(e.target as HTMLFormElement);
@@ -45,13 +55,16 @@ function SignupComp() {
           data: {
             email: formData.get("email") as string,
             password: formData.get("password") as string,
+            redirectUrl: "/dashboard",
           },
         });
       }}
       afterSubmit={
         signupMutation.data?.error ? (
           <>
-            <div className="text-red-400">{signupMutation.data.message}</div>
+            <div role="alert" className="text-sm text-destructive">
+              {signupMutation.data.message}
+            </div>
           </>
         ) : null
       }

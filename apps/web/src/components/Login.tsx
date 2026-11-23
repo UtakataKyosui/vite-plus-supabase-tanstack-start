@@ -1,9 +1,9 @@
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "../hooks/useMutation";
 import { loginFn } from "../routes/_authed";
 import { signupFn } from "../routes/signup";
-import { Auth } from "./Auth";
+import { Auth } from "./auth/auth-card";
 
 export function Login() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export function Login() {
     onSuccess: async (ctx) => {
       if (!ctx.data?.error) {
         await router.invalidate();
-        router.navigate({ to: "/" });
+        router.navigate({ to: "/dashboard" });
         return;
       }
     },
@@ -25,7 +25,19 @@ export function Login() {
 
   return (
     <Auth
-      actionText="Login"
+      actionText="Sign in"
+      description="Sign in to manage your inventory."
+      footer={
+        <>
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Sign up
+          </Link>
+        </>
+      }
       status={loginMutation.status}
       onSubmit={(e) => {
         const formData = new FormData(e.target as HTMLFormElement);
@@ -40,12 +52,14 @@ export function Login() {
       afterSubmit={
         loginMutation.data ? (
           <>
-            <div className="text-red-400">{loginMutation.data.message}</div>
+            <div role="alert" className="text-sm text-destructive">
+              {loginMutation.data.message}
+            </div>
             {loginMutation.data.error &&
             loginMutation.data.message === "Invalid login credentials" ? (
               <div>
                 <button
-                  className="text-blue-500"
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
                   onClick={(e) => {
                     const formData = new FormData((e.target as HTMLButtonElement).form!);
 
