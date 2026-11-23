@@ -52,8 +52,6 @@ jobs:
 
       - uses: moonrepo/setup-toolchain@v0.6.4
         if: steps.filter.outputs.code == 'true'
-        with:
-          auto-install: true
 
       - name: Install dependencies
         if: steps.filter.outputs.code == 'true'
