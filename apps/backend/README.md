@@ -1,13 +1,12 @@
 # backend
 
-Homebox（ホームインベントリ管理）を TanStack Start で作り直すための、バックエンド側の置き場所。
-現時点では API 契約（`openapi.yaml`）だけを持つ。フロントエンドは `apps/web`。
+さまざまな物を管理するアプリのバックエンド。フロントエンドは `apps/web`（TanStack Start）、認証は Supabase Auth。
+現時点では API 契約（`openapi.yaml`）だけを持つ。
 
-- 元実装: [sysadminsmedia/homebox](https://github.com/sysadminsmedia/homebox) の `backend/`（Go）
-- 基準 commit: `4d19c9e4d23ae3e55c12c844e4810b494a0f1318`
-- 上流のライセンスは AGPL-3.0。`openapi.yaml` は上流の生成物から派生している。
+API 契約は [sysadminsmedia/homebox](https://github.com/sysadminsmedia/homebox) の `backend/`（Go、commit `4d19c9e4d23ae3e55c12c844e4810b494a0f1318`）を起点にしており、そこから独自に変更していく。
+Homebox のライセンスは AGPL-3.0。
 
-## 元のバックエンドがしていること
+## 参考: Homebox のバックエンド
 
 Go 製の単一バイナリで、REST API（`/api/v1/*`）と、ビルド済み SPA の静的配信を兼ねる。
 
@@ -52,32 +51,30 @@ Go 製の単一バイナリで、REST API（`/api/v1/*`）と、ビルド済み 
 
 ## openapi.yaml
 
-上流の swag 生成物 `backend/app/api/static/docs/openapi-3.json` を元に、`backend/app/api/routes.go` と突き合わせて補正している。
-補正は `scripts/sync-openapi.mjs` で行う。スペックの operation と `routes.go` のルートが 1 対 1 に一致しないとスクリプトは失敗する。
+手で保守する。Homebox の swag 生成物を `routes.go` と突き合わせて補正したものを起点に、次を変更した。
 
-上流との差分:
+- 認証を Supabase Auth に置き換えた。登録・ログイン・ログアウト・トークン更新・パスワードリセット・パスワード変更・OIDC の operation を削除し、認証方式を Supabase のアクセストークン（`SupabaseAuth`）に一本化した
+- 添付ファイル用トークン（`?access_token=`）を廃止した
+- `?tenant=` は、URL を直接使う operation（画像、ダウンロード）だけに残した。それ以外は `X-Tenant` ヘッダのみ
+- 画像・CSV を返す operation の content type を実際の値（`image/png`、`image/jpeg`、`text/csv`）に直した
 
-- `PUT /v1/users/change-password` を、実際のルートである `/v1/users/self/change-password` に直した
-- swag 定義が欠けていたルートを追加した: `GET /v1/ws/events`、`GET /v1/labelmaker/entity/{id}`、`POST /v1/telemetry`
-- 設定で有効にしたときだけ存在するルートに `x-homebox-condition` を付けた（OIDC、telemetry）
-- `operationId` を Go のハンドラ名から付けた（例: `HandleEntitiesGetAll` → `entitiesGetAll`）
-- 認証方式を `CookieAuth` / `BearerAuth` / `AttachmentToken` / `SessionQueryToken` に分けた
-- 認証が必要な operation に `X-Tenant` / `tenant` パラメータと 401 を、owner 限定の operation に 403 を、レート制限のある operation に 429 を付けた
+Homebox から引き継いだ補正:
+
+- swag 定義が欠けていたルート（`GET /v1/ws/events`、`GET /v1/labelmaker/entity/{id}`、`POST /v1/telemetry`）を追加し、`PUT /v1/users/self/change-password` のパスを直した
+- `operationId` を Go のハンドラ名から付けた（例: `HandleEntitiesGetAll` → `entitiesGetAll`）。Orval が生成する関数名になる
+- owner 限定の operation に 403 を付けた
 - OpenAPI 3.0 で無効な `nullable` + `allOf` の組に `type: object` を補った
 
-### コマンド
-
 ```sh
-vp run check:openapi                        # スペックを lint する（moon の check タスク）
-vp run sync:openapi <homebox の checkout>   # 上流から openapi.yaml を再生成する
+vp run check:openapi   # スペックを lint する（moon の check タスク）
 ```
 
 ## 未決事項
 
-実装はまだ無い。着手前に次を決める。
-
 - ランタイム: TanStack Start の server routes / server functions、独立した HTTP サーバー（Hono など）、Supabase Edge Functions のどれに載せるか
-- 永続化: Supabase Postgres と Storage に寄せるか（上流は ent + SQLite/PostgreSQL + gocloud blob）
-- 認証: 上流の独自トークン（Cookie `hb.auth.token`、API キー、添付トークン）を再現するか、Supabase Auth に置き換えて契約を変えるか
-- リアルタイム: `/v1/ws/events` を Supabase Realtime で代替するか
-- `apps/web` から呼ぶクライアントを `openapi.yaml` からどう生成するか
+- 永続化: Supabase Postgres と Storage に寄せるか
+- API キー: Supabase Auth には無い。`/v1/users/self/api-keys` を残すか、残すならどう検証するか
+- 添付ファイルの配信: Storage の署名付き URL に置き換えるか（`<img src>` では Authorization ヘッダを付けられない）
+- リアルタイム: `/v1/ws/events` を Supabase Realtime で代替するか。Orval の生成対象からは外している
+- SSR からの API 呼び出し: `apps/web` の生成クライアントは相対 URL（`/api`）で呼ぶため、サーバー側で実行すると失敗する
+- 対象範囲を家財以外に広げるときの `entity` / `entity_type` の扱いと、スペックの `info.title`（今は `Homebox API`）
