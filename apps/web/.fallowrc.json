@@ -1,8 +1,17 @@
 {
   "$schema": "./node_modules/fallow/schema.json",
   "ignorePatterns": [".agents/**", ".claude/**"],
-  "entry": ["src/components/ui/**", "src/lib/utils.ts"],
-  "ignoreExports": [{ "file": "src/components/ui/**", "exports": ["*"] }],
+  "entry": ["src/components/ui/**", "src/lib/utils.ts", "src/api/generated/**", "orval.config.ts"],
+  "ignoreExports": [
+    {
+      "file": "src/components/ui/**",
+      "exports": ["*"]
+    },
+    {
+      "file": "src/api/generated/**",
+      "exports": ["*"]
+    }
+  ],
   "ignoreExportsUsedInFile": true,
   "rules": {
     "circular-dependencies": "warn"

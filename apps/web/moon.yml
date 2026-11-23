@@ -5,6 +5,15 @@ layer: "application"
 stack: "frontend"
 
 tasks:
+  generate-api:
+    command: "vp run generate:api"
+    inputs:
+      - "/apps/backend/openapi.yaml"
+      - "orval.config.ts"
+      - "src/api/fetcher.ts"
+    outputs:
+      - "src/api/generated"
+
   dev:
     command: "vp run dev"
     preset: "server"

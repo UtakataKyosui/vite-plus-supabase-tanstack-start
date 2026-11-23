@@ -2738,7 +2738,7 @@ paths:
   /v1/ws/events:
     get:
       tags:
-        - Base
+        - Realtime
       summary: Subscribe to collection mutation events
       description: |-
         WebSocket endpoint (subprotocol `hb-auth`). The access token is sent as the second

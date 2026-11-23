@@ -69,6 +69,10 @@ Homebox から引き継いだ補正:
 vp run check:openapi   # スペックを lint する（moon の check タスク）
 ```
 
+`apps/web` のクライアント（TanStack Query の hook と型）は Orval でこのスペックから生成し、`apps/web/src/api/generated` にコミットする。
+スペックを変えたら `apps/web` で `vp run generate:api`（moon では `web:generate-api`）を実行する。
+タグ `Realtime` の operation は生成対象から外している。
+
 ## 未決事項
 
 - ランタイム: TanStack Start の server routes / server functions、独立した HTTP サーバー（Hono など）、Supabase Edge Functions のどれに載せるか
