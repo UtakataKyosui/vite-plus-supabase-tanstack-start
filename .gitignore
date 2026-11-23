@@ -6,6 +6,7 @@ yarn.lock
 .cache
 # The checked-in .env contains public demo values used by the build.
 !.env
+dist/
 .vercel
 .output
 /build/
