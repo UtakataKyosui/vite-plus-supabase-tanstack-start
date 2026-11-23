@@ -21,3 +21,6 @@ dist/
 
 # dotenvx private keys
 .env.keys
+
+# fallow analysis cache
+.fallow/

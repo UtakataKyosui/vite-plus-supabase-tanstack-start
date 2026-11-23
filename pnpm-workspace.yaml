@@ -1,6 +1,16 @@
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@1.0.0
   vite-plus: 1.0.0
+minimumReleaseAgeExclude:
+  - "@fallow-cli/darwin-arm64@3.47.0"
+  - "@fallow-cli/darwin-x64@3.47.0"
+  - "@fallow-cli/linux-arm64-gnu@3.47.0"
+  - "@fallow-cli/linux-arm64-musl@3.47.0"
+  - "@fallow-cli/linux-x64-gnu@3.47.0"
+  - "@fallow-cli/linux-x64-musl@3.47.0"
+  - "@fallow-cli/win32-arm64-msvc@3.47.0"
+  - "@fallow-cli/win32-x64-msvc@3.47.0"
+  - fallow@3.47.0
 overrides:
   vite@*: "catalog:"
 peerDependencyRules:
@@ -9,9 +19,9 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
 permissions:
-  '@tanstack/react-router':
+  "@tanstack/react-router":
     skills: [router-query, migrate-from-react-router, react-router]
-  '@tanstack/react-start':
+  "@tanstack/react-start":
     skills: [migrate-from-nextjs, react-start]
 skills:
   dirs:

@@ -92,7 +92,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const { user } = Route.useRouteContext();
 
   return (
-    <html suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>

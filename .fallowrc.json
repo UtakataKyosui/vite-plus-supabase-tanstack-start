@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "ignorePatterns": [".agents/**", ".claude/**"],
+  "entry": ["src/components/ui/**", "src/lib/utils.ts"],
+  "ignoreExports": [{ "file": "src/components/ui/**", "exports": ["*"] }],
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "circular-dependencies": "warn"
+  }
+}

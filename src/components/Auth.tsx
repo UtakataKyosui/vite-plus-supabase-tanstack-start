@@ -4,10 +4,10 @@ export function Auth({
   status,
   afterSubmit,
 }: {
-  actionText: string
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
-  status: 'pending' | 'idle' | 'success' | 'error'
-  afterSubmit?: React.ReactNode
+  actionText: string;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  status: "pending" | "idle" | "success" | "error";
+  afterSubmit?: React.ReactNode;
 }) {
   return (
     <div className="fixed inset-0 bg-white dark:bg-black flex items-start justify-center p-8">
@@ -15,8 +15,8 @@ export function Auth({
         <h1 className="text-2xl font-bold mb-4">{actionText}</h1>
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            onSubmit(e)
+            e.preventDefault();
+            onSubmit(e);
           }}
           className="space-y-4"
         >
@@ -45,13 +45,13 @@ export function Auth({
           <button
             type="submit"
             className="w-full bg-cyan-600 text-white rounded-sm py-2 font-black uppercase"
-            disabled={status === 'pending'}
+            disabled={status === "pending"}
           >
-            {status === 'pending' ? '...' : actionText}
+            {status === "pending" ? "..." : actionText}
           </button>
           {afterSubmit ? afterSubmit : null}
         </form>
       </div>
     </div>
-  )
+  );
 }

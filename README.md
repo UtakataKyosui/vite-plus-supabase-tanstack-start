@@ -47,6 +47,16 @@ To build the app for production:
 pnpm build
 ```
 
+## Static Checks
+
+`vp run check:all` runs, in order (each step is cached by Vite Task):
+
+1. `vp check` — Oxfmt (format), Oxlint (lint) and type check
+2. `biome ci .` — Biome linter only (formatting and import sorting stay with Oxfmt); config in `biome.json`
+3. `fallow dead-code` — unused files/exports/dependencies; config in `.fallowrc.json`
+
+CI (`.github/workflows/check.yml`) runs `vp run check:all` on pull requests and pushes to `main`. When no TypeScript/CSS or tooling config changed, the job skips the checks and exits successfully. A newer run for the same PR or branch cancels the one in progress.
+
 ## Supabase Integration
 
 This example demonstrates:
