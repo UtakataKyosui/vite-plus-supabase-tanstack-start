@@ -32,7 +32,6 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
               - '**/tsconfig.json'
-              - '**/biome.json'
               - '**/.fallowrc.json'
               - '**/moon.yml'
               - 'apps/backend/openapi.yaml'
@@ -67,7 +66,7 @@ jobs:
           restore-keys: |
             vite-task-${{ runner.os }}-${{ runner.arch }}-
 
-      - name: moon run :check (vp check + Biome + fallow)
+      - name: moon run :check (vp check + fallow)
         if: steps.filter.outputs.code == 'true'
         run: moon run :check
       - name: moon run :test

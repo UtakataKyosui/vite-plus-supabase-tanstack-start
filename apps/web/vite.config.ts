@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   run: {
     tasks: {
-      "check:all": ["vp check", "biome ci .", "fallow dead-code --no-cache"],
+      "check:all": ["vp check", "fallow dead-code --no-cache"],
     },
   },
   server: {

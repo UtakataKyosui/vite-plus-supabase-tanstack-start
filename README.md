@@ -69,9 +69,8 @@ Each moon task calls the package script or Vite Task of the same name in `apps/w
 
 `moon run web:check` runs the `check:all` Vite Task in `apps/web`, which runs, in order (each step is cached by Vite Task):
 
-1. `vp check` — Oxfmt (format), Oxlint (lint) and type check, using the root `vite.config.ts` settings
-2. `biome ci .` — Biome linter only (formatting and import sorting stay with Oxfmt); config in `apps/web/biome.json`
-3. `fallow dead-code` — unused files/exports/dependencies; config in `apps/web/.fallowrc.json`
+1. `vp check` — Oxfmt (format and import sorting), Oxlint (lint) and type check, using the root `vite.config.ts` settings
+2. `fallow dead-code` — unused files/exports/dependencies; config in `apps/web/.fallowrc.json`
 
 CI (`.github/workflows/check.yml`) runs `moon run :check` on pull requests and pushes to `main`. When no TypeScript/CSS or tooling config changed, the job skips the checks and exits successfully. A newer run for the same PR or branch cancels the one in progress.
 
