@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Homebox API
+  title: Smart Box API
   version: "1.0"
   description: |-
     API contract for the inventory backend in apps/backend.
@@ -13,20 +13,18 @@ info:
   license:
     name: AGPL-3.0
     url: https://github.com/sysadminsmedia/homebox/blob/main/LICENSE
-  x-upstream:
-    repository: https://github.com/sysadminsmedia/homebox
-    path: backend
-    commit: 4d19c9e4d23ae3e55c12c844e4810b494a0f1318
 servers:
   - url: /api
     description: Same origin as the web client
 security:
-  - SupabaseAuth: []
+  - SessionCookie: []
+  - ApiKey: []
 paths:
   /v1/actions/create-missing-thumbnails:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Creates thumbnails for items that are missing them
       tags:
         - Actions
@@ -46,7 +44,8 @@ paths:
   /v1/actions/ensure-asset-ids:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Ensures all items in the database have an asset ID
       tags:
         - Actions
@@ -66,7 +65,8 @@ paths:
   /v1/actions/ensure-import-refs:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Ensures all items in the database have an import ref
       tags:
         - Actions
@@ -86,7 +86,8 @@ paths:
   /v1/actions/set-primary-photos:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Sets the first photo of each item as the primary photo
       tags:
         - Actions
@@ -106,7 +107,8 @@ paths:
   /v1/actions/wipe-inventory:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Deletes all items in the inventory
       tags:
         - Actions
@@ -132,7 +134,8 @@ paths:
   /v1/actions/zero-item-time-fields:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Resets all item date fields to the beginning of the day
       tags:
         - Actions
@@ -152,7 +155,8 @@ paths:
   /v1/assets/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Items
       summary: Get Item by Asset ID
@@ -191,7 +195,8 @@ paths:
   /v1/entities:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Query All Entities
@@ -263,7 +268,8 @@ paths:
       operationId: entitiesGetAll
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Create Entity
@@ -289,7 +295,8 @@ paths:
   /v1/entities/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get Entity
@@ -313,7 +320,8 @@ paths:
       operationId: entityGet
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Update Entity
@@ -344,7 +352,8 @@ paths:
       operationId: entityUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Delete Entity
@@ -364,7 +373,8 @@ paths:
       operationId: entityDelete
     patch:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Patch Entity
@@ -396,7 +406,8 @@ paths:
   /v1/entities/{id}/attachments:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities Attachments
       summary: Create Entity Attachment
@@ -450,7 +461,8 @@ paths:
   /v1/entities/{id}/attachments/{attachment_id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities Attachments
       summary: Get Entity Attachment
@@ -482,7 +494,8 @@ paths:
       operationId: entityAttachmentGet
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities Attachments
       summary: Update Entity Attachment
@@ -519,7 +532,8 @@ paths:
       operationId: entityAttachmentUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities Attachments
       summary: Delete Entity Attachment
@@ -546,7 +560,8 @@ paths:
   /v1/entities/{id}/attachments/external:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Links an entity to a document or URL in an external system without copying
       tags:
         - Entities Attachments
@@ -585,7 +600,8 @@ paths:
   /v1/entities/{id}/duplicate:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Duplicate Entity
@@ -617,7 +633,8 @@ paths:
   /v1/entities/{id}/maintenance:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Item Maintenance
       summary: Get Maintenance Log
@@ -655,7 +672,8 @@ paths:
       operationId: maintenanceLogGet
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Item Maintenance
       summary: Create Maintenance Entry
@@ -687,7 +705,8 @@ paths:
   /v1/entities/{id}/path:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get the full path of an entity
@@ -714,7 +733,8 @@ paths:
   /v1/entities/export:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Export Entities
@@ -734,7 +754,8 @@ paths:
   /v1/entities/fields:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get All Custom Field Names
@@ -755,7 +776,8 @@ paths:
   /v1/entities/fields/values:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get All Custom Field Values
@@ -782,7 +804,8 @@ paths:
   /v1/entities/import:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Import Entities
@@ -810,7 +833,8 @@ paths:
   /v1/entities/tree:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get Locations Tree
@@ -836,7 +860,8 @@ paths:
   /v1/entity-types:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Types
       summary: Get All Entity Types
@@ -856,7 +881,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Types
       summary: Create Entity Type
@@ -882,7 +908,8 @@ paths:
   /v1/entity-types/{id}:
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Types
       summary: Update Entity Type
@@ -913,7 +940,8 @@ paths:
       operationId: entityTypeUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Types
       summary: Delete Entity Type
@@ -934,7 +962,8 @@ paths:
   /v1/group/exports:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Returns export job rows for the caller's group, newest first.
       tags:
         - Group
@@ -953,7 +982,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Creates a pending export row and enqueues the build job. Poll the listing endpoint or watch the WebSocket for completion.
       tags:
         - Group
@@ -973,7 +1003,8 @@ paths:
   /v1/group/exports/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Get an Export
@@ -997,7 +1028,8 @@ paths:
       operationId: exportGet
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Deletes the export row and its blob artifact.
       tags:
         - Group
@@ -1019,7 +1051,8 @@ paths:
   /v1/group/exports/{id}/download:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Download an Export Artifact
@@ -1046,7 +1079,8 @@ paths:
   /v1/group/import:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Uploads a collection-export zip and enqueues the import job. The destination group must be empty. Returns the tracked import row so clients can poll for progress.
       tags:
         - Group
@@ -1079,7 +1113,8 @@ paths:
   /v1/groups:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Get Group
@@ -1097,7 +1132,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Update Group
@@ -1125,7 +1161,8 @@ paths:
       description: Requires the owner role on the collection.
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Create Group
@@ -1150,7 +1187,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Delete Group
@@ -1168,7 +1206,8 @@ paths:
   /v1/groups/all:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Get All Groups
@@ -1189,7 +1228,8 @@ paths:
   /v1/groups/invitations:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Get All Group Invitations
@@ -1209,7 +1249,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Create Group Invitation
@@ -1238,7 +1279,8 @@ paths:
   /v1/groups/invitations/{id}:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Accept Group Invitation
@@ -1262,7 +1304,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Delete Group Invitation
@@ -1286,7 +1329,8 @@ paths:
   /v1/groups/members:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Get All Group Members
@@ -1307,7 +1351,8 @@ paths:
   /v1/groups/members/{user_id}:
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Group
       summary: Remove User from Group
@@ -1331,7 +1376,8 @@ paths:
   /v1/groups/statistics:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Statistics
       summary: Get Group Statistics
@@ -1350,7 +1396,8 @@ paths:
   /v1/groups/statistics/locations:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Statistics
       summary: Get Location Statistics
@@ -1371,7 +1418,8 @@ paths:
   /v1/groups/statistics/purchase-price:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Statistics
       summary: Get Purchase Price Statistics
@@ -1400,7 +1448,8 @@ paths:
   /v1/groups/statistics/tags:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Statistics
       summary: Get Tags Statistics
@@ -1421,7 +1470,8 @@ paths:
   /v1/label-templates:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Get All Label Templates
@@ -1441,7 +1491,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Create Label Template
@@ -1467,7 +1518,8 @@ paths:
   /v1/label-templates/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Get Label Template
@@ -1491,7 +1543,8 @@ paths:
       operationId: labelTemplatesGet
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Update Label Template
@@ -1522,7 +1575,8 @@ paths:
       operationId: labelTemplatesUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Delete Label Template
@@ -1543,7 +1597,8 @@ paths:
   /v1/label-templates/{id}/duplicate:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Duplicate Label Template
@@ -1568,7 +1623,8 @@ paths:
   /v1/label-templates/{id}/preview:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Preview Label Template
@@ -1595,7 +1651,8 @@ paths:
   /v1/label-templates/{id}/print:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Print Labels
@@ -1627,7 +1684,8 @@ paths:
   /v1/label-templates/{id}/print-locations:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Print Location Labels
@@ -1659,7 +1717,8 @@ paths:
   /v1/label-templates/{id}/render:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Render Label for Items
@@ -1696,7 +1755,8 @@ paths:
   /v1/label-templates/{id}/render-assets:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       description: Renders one label per asset ID in the range. Asset IDs that no entity has yet get a label with only the asset ID and asset URL, for pre-printing tags.
       tags:
         - Label Templates
@@ -1734,7 +1794,8 @@ paths:
   /v1/label-templates/{id}/render-locations:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Render Label for Locations
@@ -1771,7 +1832,8 @@ paths:
   /v1/label-templates/barcode-formats:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Get Supported Barcode Formats
@@ -1792,7 +1854,8 @@ paths:
   /v1/label-templates/presets:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Label Templates
       summary: Get Label Size Presets
@@ -1813,7 +1876,8 @@ paths:
   /v1/labelmaker/asset/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Items
       summary: Get Asset label
@@ -1848,7 +1912,8 @@ paths:
   /v1/labelmaker/entity/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entities
       summary: Get Entity label
@@ -1884,7 +1949,8 @@ paths:
   /v1/labelmaker/item/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Items
       summary: Get Item label
@@ -1919,7 +1985,8 @@ paths:
   /v1/labelmaker/location/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Locations
       summary: Get Location label
@@ -1954,7 +2021,8 @@ paths:
   /v1/maintenance:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Maintenance
       summary: Query All Maintenance
@@ -1987,7 +2055,8 @@ paths:
   /v1/maintenance/{id}:
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Maintenance
       summary: Update Maintenance Entry
@@ -2018,7 +2087,8 @@ paths:
       operationId: maintenanceEntryUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Maintenance
       summary: Delete Maintenance Entry
@@ -2039,7 +2109,8 @@ paths:
   /v1/notifiers:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Notifiers
       summary: Get Notifiers
@@ -2059,7 +2130,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Notifiers
       summary: Create Notifier
@@ -2085,7 +2157,8 @@ paths:
   /v1/notifiers/{id}:
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Notifiers
       summary: Update Notifier
@@ -2116,7 +2189,8 @@ paths:
       operationId: updateNotifier
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Notifiers
       summary: Delete a Notifier
@@ -2137,7 +2211,8 @@ paths:
   /v1/notifiers/test:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Notifiers
       summary: Test Notifier
@@ -2160,7 +2235,8 @@ paths:
   /v1/products/search-from-barcode:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Items
       summary: Search EAN from Barcode
@@ -2186,7 +2262,8 @@ paths:
   /v1/qrcode:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Items
       summary: Create QR Code
@@ -2212,7 +2289,8 @@ paths:
   /v1/reporting/bill-of-materials:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Reporting
       summary: Export Bill of Materials
@@ -2246,7 +2324,8 @@ paths:
   /v1/tags:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Tags
       summary: Get All Tags
@@ -2266,7 +2345,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Tags
       summary: Create Tag
@@ -2292,7 +2372,8 @@ paths:
   /v1/tags/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Tags
       summary: Get Tag
@@ -2316,7 +2397,8 @@ paths:
       operationId: tagGet
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Tags
       summary: Update Tag
@@ -2347,7 +2429,8 @@ paths:
       operationId: tagUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Tags
       summary: Delete Tag
@@ -2371,7 +2454,6 @@ paths:
         - Base
       summary: OpenTelemetry proxy
       description: Forwards OTLP payloads from the web client to the configured collector.
-      x-homebox-condition: otel.enabled && otel.proxy_enabled
       requestBody:
         required: true
         content:
@@ -2386,13 +2468,15 @@ paths:
           $ref: "#/components/responses/Unauthorized"
       operationId: telemetryProxy
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       parameters:
         - $ref: "#/components/parameters/TenantHeader"
   /v1/templates:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Get All Entity Templates
@@ -2412,7 +2496,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Create Entity Template
@@ -2438,7 +2523,8 @@ paths:
   /v1/templates/{id}:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Get Entity Template
@@ -2462,7 +2548,8 @@ paths:
       operationId: entityTemplatesGet
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Update Entity Template
@@ -2493,7 +2580,8 @@ paths:
       operationId: entityTemplatesUpdate
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Delete Entity Template
@@ -2514,7 +2602,8 @@ paths:
   /v1/templates/{id}/create-item:
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - Entity Templates
       summary: Create Entity from Template
@@ -2546,7 +2635,8 @@ paths:
   /v1/users/self:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - User
       summary: Get User Self
@@ -2569,7 +2659,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - User
       summary: Update Account
@@ -2599,7 +2690,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - User
       summary: Delete Account
@@ -2614,7 +2706,7 @@ paths:
   /v1/users/self/api-keys:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
       tags:
         - User
       summary: List API Keys
@@ -2634,7 +2726,7 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     post:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
       tags:
         - User
       summary: Create API Key
@@ -2660,7 +2752,7 @@ paths:
   /v1/users/self/api-keys/{id}:
     delete:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
       tags:
         - User
       summary: Delete API Key
@@ -2681,7 +2773,8 @@ paths:
   /v1/users/self/settings:
     get:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - User
       summary: Get user settings
@@ -2705,7 +2798,8 @@ paths:
         - $ref: "#/components/parameters/TenantHeader"
     put:
       security:
-        - SupabaseAuth: []
+        - SessionCookie: []
+        - ApiKey: []
       tags:
         - User
       summary: Update user settings
@@ -2735,41 +2829,24 @@ paths:
       operationId: userSelfSettingsUpdate
       parameters:
         - $ref: "#/components/parameters/TenantHeader"
-  /v1/ws/events:
-    get:
-      tags:
-        - Realtime
-      summary: Subscribe to collection mutation events
-      description: |-
-        WebSocket endpoint (subprotocol `hb-auth`). The access token is sent as the second
-        element of `Sec-WebSocket-Protocol` (`hb-auth, <token>`).
-
-        Server messages are JSON `{ "event": string }`, broadcast to sockets of the same collection.
-        A `ping` event is sent every 10 seconds.
-      security:
-        - SupabaseAuth: []
-      responses:
-        "101":
-          description: Switching Protocols
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-      x-websocket:
-        subprotocol: hb-auth
-        messages:
-          $ref: "#/components/schemas/ws.EventMessage"
-      operationId: cacheWS
-      parameters:
-        - $ref: "#/components/parameters/TenantHeader"
 components:
   securitySchemes:
-    SupabaseAuth:
+    SessionCookie:
+      type: apiKey
+      in: cookie
+      name: sb-auth-token
+      description: |-
+        Supabase Auth session cookie set by @supabase/ssr (`sb-<project-ref>-auth-token`,
+        possibly split into `.0`, `.1`, ... chunks). Used by the web client.
+
+        Requests that change state (POST, PUT, PATCH, DELETE) are rejected unless the `Origin`
+        header matches the server's own origin.
+    ApiKey:
       type: http
       scheme: bearer
-      bearerFormat: JWT
       description: |-
-        Supabase Auth access token.
-        Browser requests from apps/web may instead carry the @supabase/ssr session cookie
-        (`sb-<project-ref>-auth-token`, possibly split into `.0`, `.1`, ... chunks).
+        API key issued by `POST /v1/users/self/api-keys`, sent as `Authorization: Bearer <key>`.
+        For external clients. API keys cannot manage API keys.
   schemas:
     attachment.Type:
       type: string
@@ -5630,21 +5707,6 @@ components:
           type: string
         fields:
           type: string
-    ws.EventMessage:
-      type: object
-      required:
-        - event
-      properties:
-        event:
-          type: string
-          enum:
-            - ping
-            - tag.mutation
-            - entity.mutation
-            - user.mutation
-            - export.mutation
-            - import.mutation
-            - label_template.mutation
   parameters:
     TenantHeader:
       name: X-Tenant

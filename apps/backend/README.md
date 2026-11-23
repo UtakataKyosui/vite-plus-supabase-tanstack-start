@@ -65,14 +65,17 @@ Go 製の単一バイナリで、REST API（`/api/v1/*`）と、ビルド済み 
 
 手で保守する。Homebox の swag 生成物を `routes.go` と突き合わせて補正したものを起点に、次を変更した。
 
-- 認証を Supabase Auth に置き換えた。登録・ログイン・ログアウト・トークン更新・パスワードリセット・パスワード変更・OIDC の operation を削除し、認証方式を Supabase のアクセストークン（`SupabaseAuth`）に一本化した
+- 認証を Supabase Auth に置き換えた。登録・ログイン・ログアウト・トークン更新・パスワードリセット・パスワード変更・OIDC の operation を削除した
+- 認証方式を 2 つにした。ブラウザは Supabase のセッション Cookie（`SessionCookie`）、外部クライアントは API キー（`ApiKey`、`Authorization: Bearer`）。API キーの管理（`/v1/users/self/api-keys`）はセッション Cookie でしか呼べない
+- 状態を変える要求（POST、PUT、PATCH、DELETE）は、`Origin` が自分のオリジンと一致しなければ拒否する（CSRF 対策）
+- リアルタイム（`/v1/ws/events`）と、Homebox 固有の拡張フィールド（`x-upstream`、`x-homebox-condition`）を削除した
 - 添付ファイル用トークン（`?access_token=`）を廃止した
 - `?tenant=` は、URL を直接使う operation（画像、ダウンロード）だけに残した。それ以外は `X-Tenant` ヘッダのみ
 - 画像・CSV を返す operation の content type を実際の値（`image/png`、`image/jpeg`、`text/csv`）に直した
 
 Homebox から引き継いだ補正:
 
-- swag 定義が欠けていたルート（`GET /v1/ws/events`、`GET /v1/labelmaker/entity/{id}`、`POST /v1/telemetry`）を追加し、`PUT /v1/users/self/change-password` のパスを直した
+- swag 定義が欠けていたルート（`GET /v1/labelmaker/entity/{id}`、`POST /v1/telemetry`）を追加し、`PUT /v1/users/self/change-password` のパスを直した
 - `operationId` を Go のハンドラ名から付けた（例: `HandleEntitiesGetAll` → `entitiesGetAll`）。Orval が生成する関数名になる
 - owner 限定の operation に 403 を付けた
 - OpenAPI 3.0 で無効な `nullable` + `allOf` の組に `type: object` を補った
@@ -87,14 +90,21 @@ vp run check:openapi   # スペックを lint する（moon の check タスク�
 moon run backend:generate-schemas web:generate-api
 ```
 
-タグ `Realtime` の operation は生成対象から外している。
+## 方針
+
+| 項目     | 決定                                                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| DB       | Supabase Postgres                                                                                                                   |
+| 認証     | ブラウザは `@supabase/ssr` のセッション Cookie、外部クライアントは API キー。変更系の要求は `Origin` を検証する                     |
+| API キー | 平文では保存せず、ハッシュと識別用の先頭文字だけを保存する。発行時に 1 回だけ表示する。テナント、スコープ、期限、最終使用日時を持つ |
+| 通知     | リアルタイム配信は入れない。必要になったらブラウザから Supabase Realtime を直接購読する                                             |
+| 名前     | Smart Box                                                                                                                           |
 
 ## 未決事項
 
-- 認証アダプタ: server routes で `@supabase/ssr` の Cookie と `Authorization: Bearer` の両方を受け、`getUser()`（または `getClaims()`）で検証する。最初の認証付き operation と一緒に作る
-
-- 永続化: Supabase Postgres と Storage に寄せるか
-- API キー: Supabase Auth には無い。`/v1/users/self/api-keys` を残すか、残すならどう検証するか
+- 認証アダプタ: server routes で Cookie と API キーを受け、Cookie は `getUser()`（または `getClaims()`）で検証する。最初の認証付き operation と一緒に作る
+- Cookie を HttpOnly にするか。`@supabase/ssr` のブラウザクライアントは Cookie を JS から読む前提で、標準では HttpOnly にならない。HttpOnly にするには、ログインを server function 経由にして Cookie をサーバー側で書く
+- API キーの権限判定: API キーの呼び出しにはユーザーの JWT が無く、`auth.uid()` を使う RLS が効かない。アプリ層で `tenant_id` を必ず絞る（リポジトリ層に集約する）か、キーから短命の JWT を発行して RLS を使うか
 - 添付ファイルの配信: Storage の署名付き URL に置き換えるか（`<img src>` では Authorization ヘッダを付けられない）
-- リアルタイム: `/v1/ws/events` を Supabase Realtime で代替するか。Orval の生成対象からは外している
-- 対象範囲を家財以外に広げるときの `entity` / `entity_type` の扱いと、スペックの `info.title`（今は `Homebox API`）
+- 対象範囲を家財以外に広げるときの `entity` / `entity_type` の扱い
+- スペックを自分のドメインに書き換えたあと、`info.contact`、`info.license`、冒頭の Homebox 由来の説明、このファイルの Homebox 由来の記述を外すか。Homebox のライセンスは AGPL-3.0 で、現状のスペックは Homebox のルートとスキーマを写したもの

@@ -4,7 +4,6 @@ export default defineConfig({
   api: {
     input: {
       target: "./openapi.yaml",
-      filters: { mode: "exclude", tags: ["Realtime"] },
     },
     output: {
       mode: "tags-split",
