@@ -71,3 +71,13 @@ Go 製の単一バイナリで、REST API（`/api/v1/*`）と、ビルド済み 
 vp run check:openapi                        # スペックを lint する（moon の check タスク）
 vp run sync:openapi <homebox の checkout>   # 上流から openapi.yaml を再生成する
 ```
+
+## 未決事項
+
+実装はまだ無い。着手前に次を決める。
+
+- ランタイム: TanStack Start の server routes / server functions、独立した HTTP サーバー（Hono など）、Supabase Edge Functions のどれに載せるか
+- 永続化: Supabase Postgres と Storage に寄せるか（上流は ent + SQLite/PostgreSQL + gocloud blob）
+- 認証: 上流の独自トークン（Cookie `hb.auth.token`、API キー、添付トークン）を再現するか、Supabase Auth に置き換えて契約を変えるか
+- リアルタイム: `/v1/ws/events` を Supabase Realtime で代替するか
+- `apps/web` から呼ぶクライアントを `openapi.yaml` からどう生成するか
