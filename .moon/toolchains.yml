@@ -1,0 +1,13 @@
+$schema: "https://moonrepo.dev/schemas/toolchains.json"
+
+# Node.js / pnpm and dependency installs are managed by Vite+ (`vp`).
+# moon uses the binaries on PATH and never installs dependencies itself.
+javascript:
+  packageManager: "pnpm"
+  installDependencies: false
+  syncPackageManagerField: false
+  inferTasksFromScripts: false
+
+node: {}
+
+pnpm: {}

@@ -24,3 +24,7 @@ dist/
 
 # fallow analysis cache
 .fallow/
+
+# moon
+.moon/cache
+.moon/docker

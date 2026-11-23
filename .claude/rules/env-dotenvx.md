@@ -1,9 +1,9 @@
 ---
 paths:
-  - ".env*"
-  - "src/utils/supabase.ts"
-  - "package.json"
-  - "vite.config.ts"
+  - "apps/*/.env*"
+  - "apps/*/src/utils/supabase.ts"
+  - "apps/*/package.json"
+  - "apps/*/vite.config.ts"
 ---
 
 # 環境変数と dotenvx

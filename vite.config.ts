@@ -1,31 +1,17 @@
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import { defineConfig, lazyPlugins } from "vite-plus";
-import viteReact from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite-plus";
 
 export default defineConfig({
+  defaultPackage: "./apps/web",
   staged: {
     "*": "vp check --fix",
   },
   fmt: {
-    ignorePatterns: [".agents/**", ".claude/**"],
+    ignorePatterns: ["**/routeTree.gen.ts", ".agents/**", ".claude/**", ".moon/cache/**"],
   },
   lint: {
-    ignorePatterns: [".agents/**", ".claude/**"],
+    ignorePatterns: [".agents/**", ".claude/**", ".moon/cache/**"],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },
   },
-  run: {
-    tasks: {
-      "check:all": ["vp check", "biome ci .", "fallow dead-code --no-cache"],
-    },
-  },
-  server: {
-    port: 3000,
-  },
-  resolve: {
-    tsconfigPaths: true,
-  },
-  plugins: lazyPlugins(() => [tailwindcss(), tanstackStart(), viteReact()]),
 });

@@ -28,12 +28,15 @@ jobs:
             code:
               - '**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}'
               - '**/*.css'
-              - 'package.json'
+              - '**/package.json'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
-              - 'tsconfig.json'
-              - 'biome.json'
-              - '.fallowrc.json'
+              - '**/tsconfig.json'
+              - '**/biome.json'
+              - '**/.fallowrc.json'
+              - '**/moon.yml'
+              - '.moon/**'
+              - '.prototools'
               - '.github/workflows/check.yml'
 
       - name: Skip (no relevant changes)
@@ -45,6 +48,11 @@ jobs:
         with:
           node-version: "26"
           cache: true
+
+      - uses: moonrepo/setup-toolchain@v0.6.4
+        if: steps.filter.outputs.code == 'true'
+        with:
+          auto-install: true
 
       - name: Install dependencies
         if: steps.filter.outputs.code == 'true'
@@ -60,9 +68,9 @@ jobs:
           restore-keys: |
             vite-task-${{ runner.os }}-${{ runner.arch }}-
 
-      - name: vp check + Biome + fallow
+      - name: moon run :check (vp check + Biome + fallow)
         if: steps.filter.outputs.code == 'true'
-        run: vp run check:all
+        run: moon run :check
 
       - name: Save Vite Task cache
         if: steps.filter.outputs.code == 'true' && success()

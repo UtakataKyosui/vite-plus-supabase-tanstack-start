@@ -1,0 +1,38 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+language: "typescript"
+layer: "application"
+stack: "frontend"
+
+tasks:
+  dev:
+    command: "vp run dev"
+    preset: "server"
+
+  build:
+    command: "vp run build"
+    inputs:
+      - "src/**/*"
+      - ".env"
+      - "package.json"
+      - "tsconfig.json"
+      - "vite.config.ts"
+    outputs:
+      - "dist"
+
+  preview:
+    command: "vp run preview"
+    deps:
+      - "build"
+    preset: "server"
+
+  start:
+    command: "vp run start"
+    deps:
+      - "build"
+    preset: "server"
+
+  check:
+    command: "vp run check:all"
+    options:
+      cache: false
