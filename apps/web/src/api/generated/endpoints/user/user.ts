@@ -28,6 +28,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ForbiddenResponse,
   RepoAPIKeyCreate,
   RepoAPIKeyCreatedOut,
   RepoAPIKeyOut,
@@ -37,7 +38,8 @@ import type {
   UserSelfSettingsGet200,
   UserSelfSettingsUpdate200,
   UserSelfSettingsUpdateBody,
-  UserSelfUpdate200
+  UserSelfUpdate200,
+  ValidateErrorResponse
 } from '../../model';
 
 import { apiFetch } from '../../../fetcher';
@@ -626,7 +628,7 @@ export const getUserAPIKeyCreateQueryKey = (repoAPIKeyCreate?: RepoAPIKeyCreate,
     }
 
 
-export const getUserAPIKeyCreateQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+export const getUserAPIKeyCreateQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>>(repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -645,11 +647,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserAPIKeyCreateQueryResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyCreate>>>
-export type UserAPIKeyCreateQueryError = ErrorType<UnauthorizedResponse>
+export type UserAPIKeyCreateQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>
 
 
 /** @summary Create API Key */
-export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>>(
  repoAPIKeyCreate: RepoAPIKeyCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userAPIKeyCreate>>,
@@ -660,7 +662,7 @@ export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKey
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Create API Key */
-export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>>(
  repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userAPIKeyCreate>>,
@@ -671,12 +673,12 @@ export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKey
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Create API Key */
-export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>>(
  repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Create API Key */
-export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse | ValidateErrorResponse>>(
  repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -726,7 +728,7 @@ export const getUserAPIKeyDeleteQueryKey = (id: string,) => {
     }
 
 
-export const getUserAPIKeyDeleteQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+export const getUserAPIKeyDeleteQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -745,11 +747,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserAPIKeyDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyDelete>>>
-export type UserAPIKeyDeleteQueryError = ErrorType<UnauthorizedResponse>
+export type UserAPIKeyDeleteQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
 
 /** @summary Delete API Key */
-export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userAPIKeyDelete>>,
@@ -760,7 +762,7 @@ export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKey
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Delete API Key */
-export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userAPIKeyDelete>>,
@@ -771,12 +773,12 @@ export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKey
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Delete API Key */
-export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Delete API Key */
-export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

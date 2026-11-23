@@ -113,9 +113,9 @@ moon run backend:generate-schemas web:generate-api
 
 - Cookie は HttpOnly、SameSite=Lax、パス `/`。HTTPS（または `X-Forwarded-Proto: https`）のときだけ Secure を付ける。ログインとサインアップは server function 経由で、ブラウザ用の Supabase クライアントは使っていない
 - セッションの更新で発行された Cookie は、`withAuth` が応答の `Set-Cookie` に付ける
-- SSR の loader から呼ぶ fetcher は、`Origin` を自分のオリジンにして送る。折り返しの応答の `Set-Cookie` は、元のページ応答に引き継ぐ
+- SSR の loader から呼ぶ fetcher は、`Origin` と `X-Forwarded-Proto` を付けて送る。折り返しの応答の `Set-Cookie` は、元のページ応答に引き継ぐ
 - API キーの管理（`/v1/users/self/api-keys`）は `["session"]` だけ。キーでキーは作れない
-- API キーは `sbx_` + 43 文字。テーブルは `supabase/migrations/20261124000000_create_api_keys.sql`。サービスロールで読み書きし、クエリは必ず呼び出し元で絞る
+- API キーは `sbx_` + 43 文字。テーブルは `supabase/migrations/20261124000000_create_api_keys.sql`。サービスロールだけが読み書きできる。クエリは必ず呼び出し元で絞る
 
 必要な環境変数: `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY`（API キーの検索と管理に使う）。公開 URL が内部 URL と違う場合は `ALLOWED_ORIGINS` にカンマ区切りで足す。
 

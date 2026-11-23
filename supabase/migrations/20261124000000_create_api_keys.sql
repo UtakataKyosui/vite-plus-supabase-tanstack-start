@@ -11,9 +11,10 @@ create table public.api_keys (
   revoked_at timestamptz
 );
 
-create index api_keys_user_id_idx on public.api_keys (user_id) where revoked_at is null;
+create index api_keys_user_id_idx on public.api_keys (user_id);
 
 -- Only the server (service role) reads and writes this table. Authorization is
 -- enforced in the application layer, so no policy is granted to anon or authenticated.
 alter table public.api_keys enable row level security;
 revoke all on public.api_keys from anon, authenticated;
+grant select, insert, update, delete on public.api_keys to service_role;

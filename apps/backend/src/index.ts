@@ -2,6 +2,7 @@ export { getStatus, type Status } from "./status";
 export type { Principal, AuthKind } from "./auth/principal";
 export { ConfigError, ValidationError } from "./auth/errors";
 export {
+  generateApiKey,
   looksLikeApiKey,
   verifyApiKey,
   type ApiKeyRecord,

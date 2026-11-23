@@ -72,6 +72,9 @@ jobs:
       - name: moon run :check (vp check + Biome + fallow)
         if: steps.filter.outputs.code == 'true'
         run: moon run :check
+      - name: moon run :test
+        if: steps.filter.outputs.code == 'true'
+        run: moon run :test
 
       - name: Save Vite Task cache
         if: steps.filter.outputs.code == 'true' && success()

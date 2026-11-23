@@ -1,5 +1,6 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { appendResponseHeader, getRequest } from "@tanstack/react-start/server";
+import { isSecureRequest } from "../utils/cookie-options";
 
 const API_PREFIX = "/api";
 
@@ -28,6 +29,7 @@ const buildRequest = createIsomorphicFn()
 
     const origin = new URL(incoming.url).origin;
     if (!headers.has("origin")) headers.set("origin", origin);
+    headers.set("x-forwarded-proto", isSecureRequest(incoming) ? "https" : "http");
     return [`${origin}${API_PREFIX}${url}`, { ...options, headers }];
   })
   .client((url: string, options: RequestInit): [string, RequestInit] => [

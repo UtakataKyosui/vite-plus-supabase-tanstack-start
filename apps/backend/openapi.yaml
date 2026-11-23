@@ -2746,6 +2746,14 @@ paths:
                 $ref: "#/components/schemas/repo.APIKeyCreatedOut"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/validate.ErrorResponse"
       operationId: userAPIKeyCreate
       parameters:
         - $ref: "#/components/parameters/TenantHeader"
@@ -2769,6 +2777,8 @@ paths:
           description: No Content
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
       operationId: userAPIKeyDelete
   /v1/users/self/settings:
     get:
