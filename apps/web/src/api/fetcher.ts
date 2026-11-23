@@ -1,4 +1,7 @@
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "/api";
+import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
+
+const API_PREFIX = "/api";
 
 export class ApiError<TBody = unknown> extends Error {
   readonly status: number;
@@ -14,6 +17,23 @@ export class ApiError<TBody = unknown> extends Error {
 
 export type ErrorType<TBody> = ApiError<TBody>;
 
+// During SSR there is no browser origin or cookie jar, so the request is sent
+// back to this server's own origin with the incoming request's cookies.
+const buildRequest = createIsomorphicFn()
+  .server((url: string, options: RequestInit): [string, RequestInit] => {
+    const incoming = getRequest();
+    const headers = new Headers(options.headers);
+    const cookie = incoming.headers.get("cookie");
+    if (cookie && !headers.has("cookie")) headers.set("cookie", cookie);
+
+    const origin = new URL(incoming.url).origin;
+    return [`${origin}${API_PREFIX}${url}`, { ...options, headers }];
+  })
+  .client((url: string, options: RequestInit): [string, RequestInit] => [
+    `${API_PREFIX}${url}`,
+    { ...options, credentials: "include" },
+  ]);
+
 async function parseBody(response: Response): Promise<unknown> {
   if (response.status === 204) return undefined;
 
@@ -24,10 +44,7 @@ async function parseBody(response: Response): Promise<unknown> {
 }
 
 export async function apiFetch<T>(url: string, options: RequestInit): Promise<T> {
-  const response = await fetch(`${baseUrl}${url}`, {
-    ...options,
-    credentials: "include",
-  });
+  const response = await fetch(...buildRequest(url, options));
   const body = await parseBody(response);
 
   if (!response.ok) throw new ApiError(response.status, body);

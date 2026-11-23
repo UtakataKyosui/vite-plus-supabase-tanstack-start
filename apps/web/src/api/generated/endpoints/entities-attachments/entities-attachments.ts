@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -116,52 +116,87 @@ formData.append(`name`, entityAttachmentCreateBody.name);
 
 
 
-export const getEntityAttachmentCreateMutationKey = () => ['entityAttachmentCreate'] as const;
-
-export const getEntityAttachmentCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError,EntityAttachmentCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError,EntityAttachmentCreateMutationVariables, TContext> => {
-
-const mutationKey = getEntityAttachmentCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityAttachmentCreate>>, EntityAttachmentCreateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  entityAttachmentCreate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityAttachmentCreateMutationResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentCreate>>>
-    export type EntityAttachmentCreateMutationBody = EntityAttachmentCreateBody
-    export type EntityAttachmentCreateMutationError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>
-    export type EntityAttachmentCreateMutationVariables = {id: string;data: EntityAttachmentCreateBody}
-
-    /** @summary Create Entity Attachment */
-export const useEntityAttachmentCreate = <TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError,EntityAttachmentCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityAttachmentCreate>>,
-        TError,
-        EntityAttachmentCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityAttachmentCreateMutationOptions(options), queryClient);
+export const getEntityAttachmentCreateQueryKey = (id: string,
+    entityAttachmentCreateBody?: EntityAttachmentCreateBody,) => {
+    return [
+    'POST', `/v1/entities/${id}/attachments`, entityAttachmentCreateBody
+    ] as const;
     }
-    export const getEntityAttachmentGetUrl = (id: string,
+
+
+export const getEntityAttachmentCreateQueryOptions = <TData = Awaited<ReturnType<typeof entityAttachmentCreate>>, TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>>(id: string,
+    entityAttachmentCreateBody: EntityAttachmentCreateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityAttachmentCreateQueryKey(id,entityAttachmentCreateBody);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityAttachmentCreate>>> = ({ signal }) => entityAttachmentCreate(id,entityAttachmentCreateBody, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityAttachmentCreateQueryResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentCreate>>>
+export type EntityAttachmentCreateQueryError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>
+
+
+/** @summary Create Entity Attachment */
+export function useEntityAttachmentCreate<TData = Awaited<ReturnType<typeof entityAttachmentCreate>>, TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>>(
+ id: string,
+    entityAttachmentCreateBody: EntityAttachmentCreateBody, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Attachment */
+export function useEntityAttachmentCreate<TData = Awaited<ReturnType<typeof entityAttachmentCreate>>, TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>>(
+ id: string,
+    entityAttachmentCreateBody: EntityAttachmentCreateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Attachment */
+export function useEntityAttachmentCreate<TData = Awaited<ReturnType<typeof entityAttachmentCreate>>, TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>>(
+ id: string,
+    entityAttachmentCreateBody: EntityAttachmentCreateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Attachment */
+export function useEntityAttachmentCreate<TData = Awaited<ReturnType<typeof entityAttachmentCreate>>, TError = ErrorType<UnauthorizedResponse | ValidateErrorResponse>>(
+ id: string,
+    entityAttachmentCreateBody: EntityAttachmentCreateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityAttachmentCreateQueryOptions(id,entityAttachmentCreateBody,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEntityAttachmentGetUrl = (id: string,
     attachmentId: string,
     params?: EntityAttachmentGetParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -284,6 +319,71 @@ export function useEntityAttachmentGet<TData = Awaited<ReturnType<typeof entityA
 
 
 
+export const getEntityAttachmentGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof entityAttachmentGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    attachmentId: string,
+    params?: EntityAttachmentGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityAttachmentGetQueryKey(id,attachmentId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityAttachmentGet>>> = ({ signal }) => entityAttachmentGet(id,attachmentId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type EntityAttachmentGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentGet>>>
+export type EntityAttachmentGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Entity Attachment */
+export function useEntityAttachmentGetSuspense<TData = Awaited<ReturnType<typeof entityAttachmentGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    params: undefined |  EntityAttachmentGetParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Entity Attachment */
+export function useEntityAttachmentGetSuspense<TData = Awaited<ReturnType<typeof entityAttachmentGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    params?: EntityAttachmentGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Entity Attachment */
+export function useEntityAttachmentGetSuspense<TData = Awaited<ReturnType<typeof entityAttachmentGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    params?: EntityAttachmentGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Entity Attachment */
+export function useEntityAttachmentGetSuspense<TData = Awaited<ReturnType<typeof entityAttachmentGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    params?: EntityAttachmentGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityAttachmentGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityAttachmentGetSuspenseQueryOptions(id,attachmentId,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getEntityAttachmentUpdateUrl = (id: string,
     attachmentId: string,) => {
 
@@ -313,52 +413,93 @@ export const entityAttachmentUpdate = async (id: string,
 
 
 
-export const getEntityAttachmentUpdateMutationKey = () => ['entityAttachmentUpdate'] as const;
-
-export const getEntityAttachmentUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError,EntityAttachmentUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError,EntityAttachmentUpdateMutationVariables, TContext> => {
-
-const mutationKey = getEntityAttachmentUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityAttachmentUpdate>>, EntityAttachmentUpdateMutationVariables> = (props) => {
-          const {id,attachmentId,data} = props ?? {};
-
-          return  entityAttachmentUpdate(id,attachmentId,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityAttachmentUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentUpdate>>>
-    export type EntityAttachmentUpdateMutationBody = RepoItemAttachmentUpdate
-    export type EntityAttachmentUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type EntityAttachmentUpdateMutationVariables = {id: string;attachmentId: string;data: RepoItemAttachmentUpdate}
-
-    /** @summary Update Entity Attachment */
-export const useEntityAttachmentUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError,EntityAttachmentUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityAttachmentUpdate>>,
-        TError,
-        EntityAttachmentUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityAttachmentUpdateMutationOptions(options), queryClient);
+export const getEntityAttachmentUpdateQueryKey = (id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate?: RepoItemAttachmentUpdate,) => {
+    return [
+    'PUT', `/v1/entities/${id}/attachments/${attachmentId}`, repoItemAttachmentUpdate
+    ] as const;
     }
-    export const getEntityAttachmentDeleteUrl = (id: string,
+
+
+export const getEntityAttachmentUpdateQueryOptions = <TData = Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate: RepoItemAttachmentUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityAttachmentUpdateQueryKey(id,attachmentId,repoItemAttachmentUpdate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityAttachmentUpdate>>> = ({ signal }) => entityAttachmentUpdate(id,attachmentId,repoItemAttachmentUpdate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined && attachmentId !== null && attachmentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityAttachmentUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentUpdate>>>
+export type EntityAttachmentUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update Entity Attachment */
+export function useEntityAttachmentUpdate<TData = Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate: RepoItemAttachmentUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Attachment */
+export function useEntityAttachmentUpdate<TData = Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate: RepoItemAttachmentUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Attachment */
+export function useEntityAttachmentUpdate<TData = Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate: RepoItemAttachmentUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Attachment */
+export function useEntityAttachmentUpdate<TData = Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string,
+    repoItemAttachmentUpdate: RepoItemAttachmentUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityAttachmentUpdateQueryOptions(id,attachmentId,repoItemAttachmentUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEntityAttachmentDeleteUrl = (id: string,
     attachmentId: string,) => {
 
 
@@ -386,52 +527,87 @@ export const entityAttachmentDelete = async (id: string,
 
 
 
-export const getEntityAttachmentDeleteMutationKey = () => ['entityAttachmentDelete'] as const;
-
-export const getEntityAttachmentDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError,EntityAttachmentDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError,EntityAttachmentDeleteMutationVariables, TContext> => {
-
-const mutationKey = getEntityAttachmentDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityAttachmentDelete>>, EntityAttachmentDeleteMutationVariables> = (props) => {
-          const {id,attachmentId} = props ?? {};
-
-          return  entityAttachmentDelete(id,attachmentId,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityAttachmentDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentDelete>>>
-
-    export type EntityAttachmentDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type EntityAttachmentDeleteMutationVariables = {id: string;attachmentId: string}
-
-    /** @summary Delete Entity Attachment */
-export const useEntityAttachmentDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError,EntityAttachmentDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityAttachmentDelete>>,
-        TError,
-        EntityAttachmentDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityAttachmentDeleteMutationOptions(options), queryClient);
+export const getEntityAttachmentDeleteQueryKey = (id: string,
+    attachmentId: string,) => {
+    return [
+    'DELETE', `/v1/entities/${id}/attachments/${attachmentId}`
+    ] as const;
     }
-    export const getEntityAttachmentExternalCreateUrl = (id: string,) => {
+
+
+export const getEntityAttachmentDeleteQueryOptions = <TData = Awaited<ReturnType<typeof entityAttachmentDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    attachmentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityAttachmentDeleteQueryKey(id,attachmentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityAttachmentDelete>>> = ({ signal }) => entityAttachmentDelete(id,attachmentId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined && attachmentId !== null && attachmentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityAttachmentDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentDelete>>>
+export type EntityAttachmentDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete Entity Attachment */
+export function useEntityAttachmentDelete<TData = Awaited<ReturnType<typeof entityAttachmentDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentDelete>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Attachment */
+export function useEntityAttachmentDelete<TData = Awaited<ReturnType<typeof entityAttachmentDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentDelete>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Attachment */
+export function useEntityAttachmentDelete<TData = Awaited<ReturnType<typeof entityAttachmentDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Attachment */
+export function useEntityAttachmentDelete<TData = Awaited<ReturnType<typeof entityAttachmentDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    attachmentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityAttachmentDeleteQueryOptions(id,attachmentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEntityAttachmentExternalCreateUrl = (id: string,) => {
 
 
 
@@ -459,51 +635,95 @@ export const entityAttachmentExternalCreate = async (id: string,
 
 
 
-export const getEntityAttachmentExternalCreateMutationKey = () => ['entityAttachmentExternalCreate'] as const;
-
-export const getEntityAttachmentExternalCreateMutationOptions = <TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError,EntityAttachmentExternalCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError,EntityAttachmentExternalCreateMutationVariables, TContext> => {
-
-const mutationKey = getEntityAttachmentExternalCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getEntityAttachmentExternalCreateQueryKey = (id: string,
+    v1ExternalAttachmentRequest?: V1ExternalAttachmentRequest,) => {
+    return [
+    'POST', `/v1/entities/${id}/attachments/external`, v1ExternalAttachmentRequest
+    ] as const;
+    }
 
 
+export const getEntityAttachmentExternalCreateQueryOptions = <TData = Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>>(id: string,
+    v1ExternalAttachmentRequest: V1ExternalAttachmentRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityAttachmentExternalCreateQueryKey(id,v1ExternalAttachmentRequest);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, EntityAttachmentExternalCreateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
 
-          return  entityAttachmentExternalCreate(id,data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>> = ({ signal }) => entityAttachmentExternalCreate(id,v1ExternalAttachmentRequest, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type EntityAttachmentExternalCreateQueryResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>>
+export type EntityAttachmentExternalCreateQueryError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>
 
-    export type EntityAttachmentExternalCreateMutationResult = NonNullable<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>>
-    export type EntityAttachmentExternalCreateMutationBody = V1ExternalAttachmentRequest
-    export type EntityAttachmentExternalCreateMutationError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>
-    export type EntityAttachmentExternalCreateMutationVariables = {id: string;data: V1ExternalAttachmentRequest}
 
-    /**
+/**
  * Links an entity to a document or URL in an external system without copying
  * @summary Create External Link Attachment
  */
-export const useEntityAttachmentExternalCreate = <TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError,EntityAttachmentExternalCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityAttachmentExternalCreate>>,
-        TError,
-        EntityAttachmentExternalCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityAttachmentExternalCreateMutationOptions(options), queryClient);
-    }
+export function useEntityAttachmentExternalCreate<TData = Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>>(
+ id: string,
+    v1ExternalAttachmentRequest: V1ExternalAttachmentRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentExternalCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentExternalCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Links an entity to a document or URL in an external system without copying
+ * @summary Create External Link Attachment
+ */
+export function useEntityAttachmentExternalCreate<TData = Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>>(
+ id: string,
+    v1ExternalAttachmentRequest: V1ExternalAttachmentRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityAttachmentExternalCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityAttachmentExternalCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Links an entity to a document or URL in an external system without copying
+ * @summary Create External Link Attachment
+ */
+export function useEntityAttachmentExternalCreate<TData = Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>>(
+ id: string,
+    v1ExternalAttachmentRequest: V1ExternalAttachmentRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Links an entity to a document or URL in an external system without copying
+ * @summary Create External Link Attachment
+ */
+export function useEntityAttachmentExternalCreate<TData = Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError = ErrorType<ValidateErrorResponse | UnauthorizedResponse>>(
+ id: string,
+    v1ExternalAttachmentRequest: V1ExternalAttachmentRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityAttachmentExternalCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityAttachmentExternalCreateQueryOptions(id,v1ExternalAttachmentRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

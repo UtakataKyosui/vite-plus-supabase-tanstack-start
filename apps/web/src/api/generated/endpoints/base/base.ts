@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -176,7 +176,62 @@ export function useCurrency<TData = Awaited<ReturnType<typeof currency>>, TError
 
 
 
-export const getBaseUrl = () => {
+export const getCurrencySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof currency>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCurrencyQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof currency>>> = ({ signal }) => currency({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type CurrencySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof currency>>>
+export type CurrencySuspenseQueryError = ErrorType<unknown>
+
+
+/** @summary Currency */
+export function useCurrencySuspense<TData = Awaited<ReturnType<typeof currency>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Currency */
+export function useCurrencySuspense<TData = Awaited<ReturnType<typeof currency>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Currency */
+export function useCurrencySuspense<TData = Awaited<ReturnType<typeof currency>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Currency */
+export function useCurrencySuspense<TData = Awaited<ReturnType<typeof currency>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof currency>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCurrencySuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGetStatusUrl = () => {
 
 
 
@@ -187,9 +242,9 @@ export const getBaseUrl = () => {
 /**
  * @summary Application Info
  */
-export const base = async ( options?: Parameters<typeof apiFetch>[1]): Promise<V1APISummary> => {
+export const getStatus = async ( options?: Parameters<typeof apiFetch>[1]): Promise<V1APISummary> => {
 
-  return apiFetch<V1APISummary>(getBaseUrl(),
+  return apiFetch<V1APISummary>(getGetStatusUrl(),
   {
     ...options,
     method: 'GET'
@@ -202,71 +257,126 @@ export const base = async ( options?: Parameters<typeof apiFetch>[1]): Promise<V
 
 
 
-export const getBaseQueryKey = () => {
+export const getGetStatusQueryKey = () => {
     return [
     `/v1/status`
     ] as const;
     }
 
 
-export const getBaseQueryOptions = <TData = Awaited<ReturnType<typeof base>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+export const getGetStatusQueryOptions = <TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getBaseQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetStatusQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof base>>> = ({ signal }) => base({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStatus>>> = ({ signal }) => getStatus({ signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type BaseQueryResult = NonNullable<Awaited<ReturnType<typeof base>>>
-export type BaseQueryError = ErrorType<unknown>
+export type GetStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getStatus>>>
+export type GetStatusQueryError = ErrorType<unknown>
 
 
 /** @summary Application Info */
-export function useBase<TData = Awaited<ReturnType<typeof base>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData>> & Pick<
+export function useGetStatus<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof base>>,
+          Awaited<ReturnType<typeof getStatus>>,
           TError,
-          Awaited<ReturnType<typeof base>>
+          Awaited<ReturnType<typeof getStatus>>
         > , 'initialData'
       >, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Application Info */
-export function useBase<TData = Awaited<ReturnType<typeof base>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData>> & Pick<
+export function useGetStatus<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof base>>,
+          Awaited<ReturnType<typeof getStatus>>,
           TError,
-          Awaited<ReturnType<typeof base>>
+          Awaited<ReturnType<typeof getStatus>>
         > , 'initialData'
       >, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Application Info */
-export function useBase<TData = Awaited<ReturnType<typeof base>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+export function useGetStatus<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /** @summary Application Info */
-export function useBase<TData = Awaited<ReturnType<typeof base>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof base>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+export function useGetStatus<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getBaseQueryOptions(options)
+  const queryOptions = getGetStatusQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGetStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStatusQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStatus>>> = ({ signal }) => getStatus({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GetStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getStatus>>>
+export type GetStatusSuspenseQueryError = ErrorType<unknown>
+
+
+/** @summary Application Info */
+export function useGetStatusSuspense<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Application Info */
+export function useGetStatusSuspense<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Application Info */
+export function useGetStatusSuspense<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Application Info */
+export function useGetStatusSuspense<TData = Awaited<ReturnType<typeof getStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getStatus>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetStatusSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
@@ -303,51 +413,89 @@ export const telemetryProxy = async (telemetryProxyBody: Blob, options?: Paramet
 
 
 
-export const getTelemetryProxyMutationKey = () => ['telemetryProxy'] as const;
-
-export const getTelemetryProxyMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError,TelemetryProxyMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError,TelemetryProxyMutationVariables, TContext> => {
-
-const mutationKey = getTelemetryProxyMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getTelemetryProxyQueryKey = (telemetryProxyBody?: Blob,) => {
+    return [
+    'POST', `/v1/telemetry`, telemetryProxyBody
+    ] as const;
+    }
 
 
+export const getTelemetryProxyQueryOptions = <TData = Awaited<ReturnType<typeof telemetryProxy>>, TError = ErrorType<UnauthorizedResponse>>(telemetryProxyBody: Blob, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTelemetryProxyQueryKey(telemetryProxyBody);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof telemetryProxy>>, TelemetryProxyMutationVariables> = (props) => {
-          const {data} = props ?? {};
 
-          return  telemetryProxy(data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof telemetryProxy>>> = ({ signal }) => telemetryProxy(telemetryProxyBody, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type TelemetryProxyQueryResult = NonNullable<Awaited<ReturnType<typeof telemetryProxy>>>
+export type TelemetryProxyQueryError = ErrorType<UnauthorizedResponse>
 
-    export type TelemetryProxyMutationResult = NonNullable<Awaited<ReturnType<typeof telemetryProxy>>>
-    export type TelemetryProxyMutationBody = Blob
-    export type TelemetryProxyMutationError = ErrorType<UnauthorizedResponse>
-    export type TelemetryProxyMutationVariables = {data: Blob}
 
-    /**
+/**
  * Forwards OTLP payloads from the web client to the configured collector.
  * @summary OpenTelemetry proxy
  */
-export const useTelemetryProxy = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError,TelemetryProxyMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof telemetryProxy>>,
-        TError,
-        TelemetryProxyMutationVariables,
-        TContext
-      > => {
-      return useMutation(getTelemetryProxyMutationOptions(options), queryClient);
-    }
+export function useTelemetryProxy<TData = Awaited<ReturnType<typeof telemetryProxy>>, TError = ErrorType<UnauthorizedResponse>>(
+ telemetryProxyBody: Blob, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof telemetryProxy>>,
+          TError,
+          Awaited<ReturnType<typeof telemetryProxy>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Forwards OTLP payloads from the web client to the configured collector.
+ * @summary OpenTelemetry proxy
+ */
+export function useTelemetryProxy<TData = Awaited<ReturnType<typeof telemetryProxy>>, TError = ErrorType<UnauthorizedResponse>>(
+ telemetryProxyBody: Blob, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof telemetryProxy>>,
+          TError,
+          Awaited<ReturnType<typeof telemetryProxy>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Forwards OTLP payloads from the web client to the configured collector.
+ * @summary OpenTelemetry proxy
+ */
+export function useTelemetryProxy<TData = Awaited<ReturnType<typeof telemetryProxy>>, TError = ErrorType<UnauthorizedResponse>>(
+ telemetryProxyBody: Blob, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Forwards OTLP payloads from the web client to the configured collector.
+ * @summary OpenTelemetry proxy
+ */
+export function useTelemetryProxy<TData = Awaited<ReturnType<typeof telemetryProxy>>, TError = ErrorType<UnauthorizedResponse>>(
+ telemetryProxyBody: Blob, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof telemetryProxy>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTelemetryProxyQueryOptions(telemetryProxyBody,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

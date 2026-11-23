@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -200,6 +200,73 @@ export function useExportsList<TData = Awaited<ReturnType<typeof exportsList>>, 
 
 
 
+export const getExportsListSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportsList>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportsListQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportsList>>> = ({ signal }) => exportsList({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type ExportsListSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportsList>>>
+export type ExportsListSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/**
+ * Returns export job rows for the caller's group, newest first.
+ * @summary List Collection Exports
+ */
+export function useExportsListSuspense<TData = Awaited<ReturnType<typeof exportsList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns export job rows for the caller's group, newest first.
+ * @summary List Collection Exports
+ */
+export function useExportsListSuspense<TData = Awaited<ReturnType<typeof exportsList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns export job rows for the caller's group, newest first.
+ * @summary List Collection Exports
+ */
+export function useExportsListSuspense<TData = Awaited<ReturnType<typeof exportsList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns export job rows for the caller's group, newest first.
+ * @summary List Collection Exports
+ */
+export function useExportsListSuspense<TData = Awaited<ReturnType<typeof exportsList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportsList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportsListSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getExportsCreateUrl = () => {
 
 
@@ -227,55 +294,93 @@ export const exportsCreate = async ( options?: Parameters<typeof apiFetch>[1]): 
 
 
 
-export const getExportsCreateMutationKey = () => ['exportsCreate'] as const;
-
-export const getExportsCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof exportsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof exportsCreate>>, TError,void, TContext> => {
-
-const mutationKey = getExportsCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getExportsCreateQueryKey = () => {
+    return [
+    'POST', `/v1/group/exports`
+    ] as const;
+    }
 
 
+export const getExportsCreateQueryOptions = <TData = Awaited<ReturnType<typeof exportsCreate>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportsCreateQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof exportsCreate>>, void> = () => {
 
-
-          return  exportsCreate(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportsCreate>>> = ({ signal }) => exportsCreate({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ExportsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof exportsCreate>>>
-
-    export type ExportsCreateMutationError = ErrorType<UnauthorizedResponse>
+export type ExportsCreateQueryResult = NonNullable<Awaited<ReturnType<typeof exportsCreate>>>
+export type ExportsCreateQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Creates a pending export row and enqueues the build job. Poll the listing endpoint or watch the WebSocket for completion.
  * @summary Start a Collection Export
  */
-export const useExportsCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof exportsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof exportsCreate>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getExportsCreateMutationOptions(options), queryClient);
-    }
-    export const getExportGetUrl = (id: string,) => {
+export function useExportsCreate<TData = Awaited<ReturnType<typeof exportsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof exportsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates a pending export row and enqueues the build job. Poll the listing endpoint or watch the WebSocket for completion.
+ * @summary Start a Collection Export
+ */
+export function useExportsCreate<TData = Awaited<ReturnType<typeof exportsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof exportsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates a pending export row and enqueues the build job. Poll the listing endpoint or watch the WebSocket for completion.
+ * @summary Start a Collection Export
+ */
+export function useExportsCreate<TData = Awaited<ReturnType<typeof exportsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates a pending export row and enqueues the build job. Poll the listing endpoint or watch the WebSocket for completion.
+ * @summary Start a Collection Export
+ */
+export function useExportsCreate<TData = Awaited<ReturnType<typeof exportsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportsCreateQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getExportGetUrl = (id: string,) => {
 
 
 
@@ -375,6 +480,61 @@ export function useExportGet<TData = Awaited<ReturnType<typeof exportGet>>, TErr
 
 
 
+export const getExportGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportGetQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportGet>>> = ({ signal }) => exportGet(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type ExportGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportGet>>>
+export type ExportGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get an Export */
+export function useExportGetSuspense<TData = Awaited<ReturnType<typeof exportGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an Export */
+export function useExportGetSuspense<TData = Awaited<ReturnType<typeof exportGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an Export */
+export function useExportGetSuspense<TData = Awaited<ReturnType<typeof exportGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an Export */
+export function useExportGetSuspense<TData = Awaited<ReturnType<typeof exportGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportGetSuspenseQueryOptions(id,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getExportDeleteUrl = (id: string,) => {
 
 
@@ -402,55 +562,93 @@ export const exportDelete = async (id: string, options?: Parameters<typeof apiFe
 
 
 
-export const getExportDeleteMutationKey = () => ['exportDelete'] as const;
-
-export const getExportDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof exportDelete>>, TError,ExportDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof exportDelete>>, TError,ExportDeleteMutationVariables, TContext> => {
-
-const mutationKey = getExportDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getExportDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/group/exports/${id}`
+    ] as const;
+    }
 
 
+export const getExportDeleteQueryOptions = <TData = Awaited<ReturnType<typeof exportDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportDeleteQueryKey(id);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof exportDelete>>, ExportDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
 
-          return  exportDelete(id,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDelete>>> = ({ signal }) => exportDelete(id, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type ExportDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof exportDelete>>>
+export type ExportDeleteQueryError = ErrorType<UnauthorizedResponse>
 
-    export type ExportDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof exportDelete>>>
 
-    export type ExportDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type ExportDeleteMutationVariables = {id: string}
-
-    /**
+/**
  * Deletes the export row and its blob artifact.
  * @summary Delete an Export
  */
-export const useExportDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof exportDelete>>, TError,ExportDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof exportDelete>>,
-        TError,
-        ExportDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getExportDeleteMutationOptions(options), queryClient);
-    }
-    export const getExportDownloadUrl = (id: string,
+export function useExportDelete<TData = Awaited<ReturnType<typeof exportDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportDelete>>,
+          TError,
+          Awaited<ReturnType<typeof exportDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes the export row and its blob artifact.
+ * @summary Delete an Export
+ */
+export function useExportDelete<TData = Awaited<ReturnType<typeof exportDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportDelete>>,
+          TError,
+          Awaited<ReturnType<typeof exportDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes the export row and its blob artifact.
+ * @summary Delete an Export
+ */
+export function useExportDelete<TData = Awaited<ReturnType<typeof exportDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes the export row and its blob artifact.
+ * @summary Delete an Export
+ */
+export function useExportDelete<TData = Awaited<ReturnType<typeof exportDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof exportDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getExportDownloadUrl = (id: string,
     params?: ExportDownloadParams,) => {
   const normalizedParams = new URLSearchParams();
 
@@ -565,6 +763,66 @@ export function useExportDownload<TData = Awaited<ReturnType<typeof exportDownlo
 
 
 
+export const getExportDownloadSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportDownload>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: ExportDownloadParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportDownloadQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDownload>>> = ({ signal }) => exportDownload(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type ExportDownloadSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportDownload>>>
+export type ExportDownloadSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Download an Export Artifact */
+export function useExportDownloadSuspense<TData = Awaited<ReturnType<typeof exportDownload>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  ExportDownloadParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Download an Export Artifact */
+export function useExportDownloadSuspense<TData = Awaited<ReturnType<typeof exportDownload>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: ExportDownloadParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Download an Export Artifact */
+export function useExportDownloadSuspense<TData = Awaited<ReturnType<typeof exportDownload>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: ExportDownloadParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Download an Export Artifact */
+export function useExportDownloadSuspense<TData = Awaited<ReturnType<typeof exportDownload>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: ExportDownloadParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownload>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getExportDownloadSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getCollectionImportUrl = () => {
 
 
@@ -594,55 +852,93 @@ formData.append(`file`, collectionImportBody.file);
 
 
 
-export const getCollectionImportMutationKey = () => ['collectionImport'] as const;
-
-export const getCollectionImportMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof collectionImport>>, TError,CollectionImportMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof collectionImport>>, TError,CollectionImportMutationVariables, TContext> => {
-
-const mutationKey = getCollectionImportMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getCollectionImportQueryKey = (collectionImportBody?: CollectionImportBody,) => {
+    return [
+    'POST', `/v1/group/import`, collectionImportBody
+    ] as const;
+    }
 
 
+export const getCollectionImportQueryOptions = <TData = Awaited<ReturnType<typeof collectionImport>>, TError = ErrorType<UnauthorizedResponse>>(collectionImportBody: CollectionImportBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCollectionImportQueryKey(collectionImportBody);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof collectionImport>>, CollectionImportMutationVariables> = (props) => {
-          const {data} = props ?? {};
 
-          return  collectionImport(data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof collectionImport>>> = ({ signal }) => collectionImport(collectionImportBody, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type CollectionImportQueryResult = NonNullable<Awaited<ReturnType<typeof collectionImport>>>
+export type CollectionImportQueryError = ErrorType<UnauthorizedResponse>
 
-    export type CollectionImportMutationResult = NonNullable<Awaited<ReturnType<typeof collectionImport>>>
-    export type CollectionImportMutationBody = CollectionImportBody
-    export type CollectionImportMutationError = ErrorType<UnauthorizedResponse>
-    export type CollectionImportMutationVariables = {data: CollectionImportBody}
 
-    /**
+/**
  * Uploads a collection-export zip and enqueues the import job. The destination group must be empty. Returns the tracked import row so clients can poll for progress.
  * @summary Import a Collection Zip
  */
-export const useCollectionImport = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof collectionImport>>, TError,CollectionImportMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof collectionImport>>,
-        TError,
-        CollectionImportMutationVariables,
-        TContext
-      > => {
-      return useMutation(getCollectionImportMutationOptions(options), queryClient);
-    }
-    export const getGroupGetUrl = () => {
+export function useCollectionImport<TData = Awaited<ReturnType<typeof collectionImport>>, TError = ErrorType<UnauthorizedResponse>>(
+ collectionImportBody: CollectionImportBody, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof collectionImport>>,
+          TError,
+          Awaited<ReturnType<typeof collectionImport>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Uploads a collection-export zip and enqueues the import job. The destination group must be empty. Returns the tracked import row so clients can poll for progress.
+ * @summary Import a Collection Zip
+ */
+export function useCollectionImport<TData = Awaited<ReturnType<typeof collectionImport>>, TError = ErrorType<UnauthorizedResponse>>(
+ collectionImportBody: CollectionImportBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof collectionImport>>,
+          TError,
+          Awaited<ReturnType<typeof collectionImport>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Uploads a collection-export zip and enqueues the import job. The destination group must be empty. Returns the tracked import row so clients can poll for progress.
+ * @summary Import a Collection Zip
+ */
+export function useCollectionImport<TData = Awaited<ReturnType<typeof collectionImport>>, TError = ErrorType<UnauthorizedResponse>>(
+ collectionImportBody: CollectionImportBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Uploads a collection-export zip and enqueues the import job. The destination group must be empty. Returns the tracked import row so clients can poll for progress.
+ * @summary Import a Collection Zip
+ */
+export function useCollectionImport<TData = Awaited<ReturnType<typeof collectionImport>>, TError = ErrorType<UnauthorizedResponse>>(
+ collectionImportBody: CollectionImportBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof collectionImport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCollectionImportQueryOptions(collectionImportBody,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupGetUrl = () => {
 
 
 
@@ -742,6 +1038,61 @@ export function useGroupGet<TData = Awaited<ReturnType<typeof groupGet>>, TError
 
 
 
+export const getGroupGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupGet>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupGetQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupGet>>> = ({ signal }) => groupGet({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupGet>>>
+export type GroupGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Group */
+export function useGroupGetSuspense<TData = Awaited<ReturnType<typeof groupGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group */
+export function useGroupGetSuspense<TData = Awaited<ReturnType<typeof groupGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group */
+export function useGroupGetSuspense<TData = Awaited<ReturnType<typeof groupGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group */
+export function useGroupGetSuspense<TData = Awaited<ReturnType<typeof groupGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupGetSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGroupUpdateUrl = () => {
 
 
@@ -769,55 +1120,93 @@ export const groupUpdate = async (repoGroupUpdate: RepoGroupUpdate, options?: Pa
 
 
 
-export const getGroupUpdateMutationKey = () => ['groupUpdate'] as const;
-
-export const getGroupUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupUpdate>>, TError,GroupUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupUpdate>>, TError,GroupUpdateMutationVariables, TContext> => {
-
-const mutationKey = getGroupUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getGroupUpdateQueryKey = (repoGroupUpdate?: RepoGroupUpdate,) => {
+    return [
+    'PUT', `/v1/groups`, repoGroupUpdate
+    ] as const;
+    }
 
 
+export const getGroupUpdateQueryOptions = <TData = Awaited<ReturnType<typeof groupUpdate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(repoGroupUpdate: RepoGroupUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupUpdateQueryKey(repoGroupUpdate);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupUpdate>>, GroupUpdateMutationVariables> = (props) => {
-          const {data} = props ?? {};
 
-          return  groupUpdate(data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupUpdate>>> = ({ signal }) => groupUpdate(repoGroupUpdate, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type GroupUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof groupUpdate>>>
+export type GroupUpdateQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
-    export type GroupUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof groupUpdate>>>
-    export type GroupUpdateMutationBody = RepoGroupUpdate
-    export type GroupUpdateMutationError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
-    export type GroupUpdateMutationVariables = {data: RepoGroupUpdate}
 
-    /**
+/**
  * Requires the owner role on the collection.
  * @summary Update Group
  */
-export const useGroupUpdate = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupUpdate>>, TError,GroupUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupUpdate>>,
-        TError,
-        GroupUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupUpdateMutationOptions(options), queryClient);
-    }
-    export const getGroupCreateUrl = () => {
+export function useGroupUpdate<TData = Awaited<ReturnType<typeof groupUpdate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ repoGroupUpdate: RepoGroupUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof groupUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Update Group
+ */
+export function useGroupUpdate<TData = Awaited<ReturnType<typeof groupUpdate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ repoGroupUpdate: RepoGroupUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof groupUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Update Group
+ */
+export function useGroupUpdate<TData = Awaited<ReturnType<typeof groupUpdate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ repoGroupUpdate: RepoGroupUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Update Group
+ */
+export function useGroupUpdate<TData = Awaited<ReturnType<typeof groupUpdate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ repoGroupUpdate: RepoGroupUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupUpdateQueryOptions(repoGroupUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupCreateUrl = () => {
 
 
 
@@ -843,52 +1232,81 @@ export const groupCreate = async (v1CreateRequest: V1CreateRequest, options?: Pa
 
 
 
-export const getGroupCreateMutationKey = () => ['groupCreate'] as const;
-
-export const getGroupCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupCreate>>, TError,GroupCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupCreate>>, TError,GroupCreateMutationVariables, TContext> => {
-
-const mutationKey = getGroupCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupCreate>>, GroupCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  groupCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GroupCreateMutationResult = NonNullable<Awaited<ReturnType<typeof groupCreate>>>
-    export type GroupCreateMutationBody = V1CreateRequest
-    export type GroupCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type GroupCreateMutationVariables = {data: V1CreateRequest}
-
-    /** @summary Create Group */
-export const useGroupCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupCreate>>, TError,GroupCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupCreate>>,
-        TError,
-        GroupCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupCreateMutationOptions(options), queryClient);
+export const getGroupCreateQueryKey = (v1CreateRequest?: V1CreateRequest,) => {
+    return [
+    'POST', `/v1/groups`, v1CreateRequest
+    ] as const;
     }
-    export const getGroupDeleteUrl = () => {
+
+
+export const getGroupCreateQueryOptions = <TData = Awaited<ReturnType<typeof groupCreate>>, TError = ErrorType<UnauthorizedResponse>>(v1CreateRequest: V1CreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupCreateQueryKey(v1CreateRequest);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupCreate>>> = ({ signal }) => groupCreate(v1CreateRequest, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GroupCreateQueryResult = NonNullable<Awaited<ReturnType<typeof groupCreate>>>
+export type GroupCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create Group */
+export function useGroupCreate<TData = Awaited<ReturnType<typeof groupCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1CreateRequest: V1CreateRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupCreate>>,
+          TError,
+          Awaited<ReturnType<typeof groupCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Group */
+export function useGroupCreate<TData = Awaited<ReturnType<typeof groupCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1CreateRequest: V1CreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupCreate>>,
+          TError,
+          Awaited<ReturnType<typeof groupCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Group */
+export function useGroupCreate<TData = Awaited<ReturnType<typeof groupCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1CreateRequest: V1CreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Group */
+export function useGroupCreate<TData = Awaited<ReturnType<typeof groupCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1CreateRequest: V1CreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupCreateQueryOptions(v1CreateRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupDeleteUrl = () => {
 
 
 
@@ -915,55 +1333,93 @@ export const groupDelete = async ( options?: Parameters<typeof apiFetch>[1]): Pr
 
 
 
-export const getGroupDeleteMutationKey = () => ['groupDelete'] as const;
-
-export const getGroupDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupDelete>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupDelete>>, TError,void, TContext> => {
-
-const mutationKey = getGroupDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getGroupDeleteQueryKey = () => {
+    return [
+    'DELETE', `/v1/groups`
+    ] as const;
+    }
 
 
+export const getGroupDeleteQueryOptions = <TData = Awaited<ReturnType<typeof groupDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupDeleteQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupDelete>>, void> = () => {
 
-
-          return  groupDelete(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupDelete>>> = ({ signal }) => groupDelete({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GroupDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof groupDelete>>>
-
-    export type GroupDeleteMutationError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
+export type GroupDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof groupDelete>>>
+export type GroupDeleteQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
 
-    /**
+/**
  * Requires the owner role on the collection.
  * @summary Delete Group
  */
-export const useGroupDelete = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupDelete>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupDelete>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getGroupDeleteMutationOptions(options), queryClient);
-    }
-    export const getGroupsGetAllUrl = () => {
+export function useGroupDelete<TData = Awaited<ReturnType<typeof groupDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupDelete>>,
+          TError,
+          Awaited<ReturnType<typeof groupDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group
+ */
+export function useGroupDelete<TData = Awaited<ReturnType<typeof groupDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupDelete>>,
+          TError,
+          Awaited<ReturnType<typeof groupDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group
+ */
+export function useGroupDelete<TData = Awaited<ReturnType<typeof groupDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group
+ */
+export function useGroupDelete<TData = Awaited<ReturnType<typeof groupDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupDeleteQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupsGetAllUrl = () => {
 
 
 
@@ -1054,6 +1510,61 @@ export function useGroupsGetAll<TData = Awaited<ReturnType<typeof groupsGetAll>>
   const queryOptions = getGroupsGetAllQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupsGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupsGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupsGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupsGetAll>>> = ({ signal }) => groupsGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupsGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupsGetAll>>>
+export type GroupsGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Groups */
+export function useGroupsGetAllSuspense<TData = Awaited<ReturnType<typeof groupsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Groups */
+export function useGroupsGetAllSuspense<TData = Awaited<ReturnType<typeof groupsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Groups */
+export function useGroupsGetAllSuspense<TData = Awaited<ReturnType<typeof groupsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Groups */
+export function useGroupsGetAllSuspense<TData = Awaited<ReturnType<typeof groupsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupsGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
@@ -1163,6 +1674,61 @@ export function useGroupInvitationsGetAll<TData = Awaited<ReturnType<typeof grou
 
 
 
+export const getGroupInvitationsGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupInvitationsGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupInvitationsGetAll>>> = ({ signal }) => groupInvitationsGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupInvitationsGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsGetAll>>>
+export type GroupInvitationsGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Group Invitations */
+export function useGroupInvitationsGetAllSuspense<TData = Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Invitations */
+export function useGroupInvitationsGetAllSuspense<TData = Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Invitations */
+export function useGroupInvitationsGetAllSuspense<TData = Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Invitations */
+export function useGroupInvitationsGetAllSuspense<TData = Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupInvitationsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupInvitationsGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGroupInvitationsCreateUrl = () => {
 
 
@@ -1190,55 +1756,93 @@ export const groupInvitationsCreate = async (v1GroupInvitationCreate: V1GroupInv
 
 
 
-export const getGroupInvitationsCreateMutationKey = () => ['groupInvitationsCreate'] as const;
-
-export const getGroupInvitationsCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError,GroupInvitationsCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError,GroupInvitationsCreateMutationVariables, TContext> => {
-
-const mutationKey = getGroupInvitationsCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getGroupInvitationsCreateQueryKey = (v1GroupInvitationCreate?: V1GroupInvitationCreate,) => {
+    return [
+    'POST', `/v1/groups/invitations`, v1GroupInvitationCreate
+    ] as const;
+    }
 
 
+export const getGroupInvitationsCreateQueryOptions = <TData = Awaited<ReturnType<typeof groupInvitationsCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(v1GroupInvitationCreate: V1GroupInvitationCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupInvitationsCreateQueryKey(v1GroupInvitationCreate);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupInvitationsCreate>>, GroupInvitationsCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
 
-          return  groupInvitationsCreate(data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupInvitationsCreate>>> = ({ signal }) => groupInvitationsCreate(v1GroupInvitationCreate, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type GroupInvitationsCreateQueryResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsCreate>>>
+export type GroupInvitationsCreateQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
-    export type GroupInvitationsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsCreate>>>
-    export type GroupInvitationsCreateMutationBody = V1GroupInvitationCreate
-    export type GroupInvitationsCreateMutationError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
-    export type GroupInvitationsCreateMutationVariables = {data: V1GroupInvitationCreate}
 
-    /**
+/**
  * Requires the owner role on the collection.
  * @summary Create Group Invitation
  */
-export const useGroupInvitationsCreate = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError,GroupInvitationsCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupInvitationsCreate>>,
-        TError,
-        GroupInvitationsCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupInvitationsCreateMutationOptions(options), queryClient);
-    }
-    export const getGroupInvitationsAcceptUrl = (id: string,) => {
+export function useGroupInvitationsCreate<TData = Awaited<ReturnType<typeof groupInvitationsCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ v1GroupInvitationCreate: V1GroupInvitationCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Create Group Invitation
+ */
+export function useGroupInvitationsCreate<TData = Awaited<ReturnType<typeof groupInvitationsCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ v1GroupInvitationCreate: V1GroupInvitationCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Create Group Invitation
+ */
+export function useGroupInvitationsCreate<TData = Awaited<ReturnType<typeof groupInvitationsCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ v1GroupInvitationCreate: V1GroupInvitationCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Create Group Invitation
+ */
+export function useGroupInvitationsCreate<TData = Awaited<ReturnType<typeof groupInvitationsCreate>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ v1GroupInvitationCreate: V1GroupInvitationCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupInvitationsCreateQueryOptions(v1GroupInvitationCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupInvitationsAcceptUrl = (id: string,) => {
 
 
 
@@ -1264,52 +1868,81 @@ export const groupInvitationsAccept = async (id: string, options?: Parameters<ty
 
 
 
-export const getGroupInvitationsAcceptMutationKey = () => ['groupInvitationsAccept'] as const;
-
-export const getGroupInvitationsAcceptMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError,GroupInvitationsAcceptMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError,GroupInvitationsAcceptMutationVariables, TContext> => {
-
-const mutationKey = getGroupInvitationsAcceptMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupInvitationsAccept>>, GroupInvitationsAcceptMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  groupInvitationsAccept(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GroupInvitationsAcceptMutationResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsAccept>>>
-
-    export type GroupInvitationsAcceptMutationError = ErrorType<UnauthorizedResponse>
-    export type GroupInvitationsAcceptMutationVariables = {id: string}
-
-    /** @summary Accept Group Invitation */
-export const useGroupInvitationsAccept = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError,GroupInvitationsAcceptMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupInvitationsAccept>>,
-        TError,
-        GroupInvitationsAcceptMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupInvitationsAcceptMutationOptions(options), queryClient);
+export const getGroupInvitationsAcceptQueryKey = (id: string,) => {
+    return [
+    'POST', `/v1/groups/invitations/${id}`
+    ] as const;
     }
-    export const getGroupInvitationsDeleteUrl = (id: string,) => {
+
+
+export const getGroupInvitationsAcceptQueryOptions = <TData = Awaited<ReturnType<typeof groupInvitationsAccept>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupInvitationsAcceptQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupInvitationsAccept>>> = ({ signal }) => groupInvitationsAccept(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GroupInvitationsAcceptQueryResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsAccept>>>
+export type GroupInvitationsAcceptQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Accept Group Invitation */
+export function useGroupInvitationsAccept<TData = Awaited<ReturnType<typeof groupInvitationsAccept>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsAccept>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsAccept>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Accept Group Invitation */
+export function useGroupInvitationsAccept<TData = Awaited<ReturnType<typeof groupInvitationsAccept>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsAccept>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsAccept>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Accept Group Invitation */
+export function useGroupInvitationsAccept<TData = Awaited<ReturnType<typeof groupInvitationsAccept>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Accept Group Invitation */
+export function useGroupInvitationsAccept<TData = Awaited<ReturnType<typeof groupInvitationsAccept>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsAccept>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupInvitationsAcceptQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupInvitationsDeleteUrl = (id: string,) => {
 
 
 
@@ -1336,55 +1969,93 @@ export const groupInvitationsDelete = async (id: string, options?: Parameters<ty
 
 
 
-export const getGroupInvitationsDeleteMutationKey = () => ['groupInvitationsDelete'] as const;
-
-export const getGroupInvitationsDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError,GroupInvitationsDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError,GroupInvitationsDeleteMutationVariables, TContext> => {
-
-const mutationKey = getGroupInvitationsDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getGroupInvitationsDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/groups/invitations/${id}`
+    ] as const;
+    }
 
 
+export const getGroupInvitationsDeleteQueryOptions = <TData = Awaited<ReturnType<typeof groupInvitationsDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupInvitationsDeleteQueryKey(id);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupInvitationsDelete>>, GroupInvitationsDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
 
-          return  groupInvitationsDelete(id,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupInvitationsDelete>>> = ({ signal }) => groupInvitationsDelete(id, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type GroupInvitationsDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsDelete>>>
+export type GroupInvitationsDeleteQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
-    export type GroupInvitationsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof groupInvitationsDelete>>>
 
-    export type GroupInvitationsDeleteMutationError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
-    export type GroupInvitationsDeleteMutationVariables = {id: string}
-
-    /**
+/**
  * Requires the owner role on the collection.
  * @summary Delete Group Invitation
  */
-export const useGroupInvitationsDelete = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError,GroupInvitationsDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupInvitationsDelete>>,
-        TError,
-        GroupInvitationsDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupInvitationsDeleteMutationOptions(options), queryClient);
-    }
-    export const getGroupMembersGetAllUrl = () => {
+export function useGroupInvitationsDelete<TData = Awaited<ReturnType<typeof groupInvitationsDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsDelete>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group Invitation
+ */
+export function useGroupInvitationsDelete<TData = Awaited<ReturnType<typeof groupInvitationsDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupInvitationsDelete>>,
+          TError,
+          Awaited<ReturnType<typeof groupInvitationsDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group Invitation
+ */
+export function useGroupInvitationsDelete<TData = Awaited<ReturnType<typeof groupInvitationsDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Delete Group Invitation
+ */
+export function useGroupInvitationsDelete<TData = Awaited<ReturnType<typeof groupInvitationsDelete>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupInvitationsDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupInvitationsDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupMembersGetAllUrl = () => {
 
 
 
@@ -1484,6 +2155,61 @@ export function useGroupMembersGetAll<TData = Awaited<ReturnType<typeof groupMem
 
 
 
+export const getGroupMembersGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupMembersGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupMembersGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupMembersGetAll>>> = ({ signal }) => groupMembersGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupMembersGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupMembersGetAll>>>
+export type GroupMembersGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Group Members */
+export function useGroupMembersGetAllSuspense<TData = Awaited<ReturnType<typeof groupMembersGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Members */
+export function useGroupMembersGetAllSuspense<TData = Awaited<ReturnType<typeof groupMembersGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Members */
+export function useGroupMembersGetAllSuspense<TData = Awaited<ReturnType<typeof groupMembersGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Group Members */
+export function useGroupMembersGetAllSuspense<TData = Awaited<ReturnType<typeof groupMembersGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupMembersGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupMembersGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGroupMemberRemoveUrl = (userId: string,) => {
 
 
@@ -1511,51 +2237,89 @@ export const groupMemberRemove = async (userId: string, options?: Parameters<typ
 
 
 
-export const getGroupMemberRemoveMutationKey = () => ['groupMemberRemove'] as const;
-
-export const getGroupMemberRemoveMutationOptions = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError,GroupMemberRemoveMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError,GroupMemberRemoveMutationVariables, TContext> => {
-
-const mutationKey = getGroupMemberRemoveMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getGroupMemberRemoveQueryKey = (userId: string,) => {
+    return [
+    'DELETE', `/v1/groups/members/${userId}`
+    ] as const;
+    }
 
 
+export const getGroupMemberRemoveQueryOptions = <TData = Awaited<ReturnType<typeof groupMemberRemove>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupMemberRemoveQueryKey(userId);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof groupMemberRemove>>, GroupMemberRemoveMutationVariables> = (props) => {
-          const {userId} = props ?? {};
 
-          return  groupMemberRemove(userId,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupMemberRemove>>> = ({ signal }) => groupMemberRemove(userId, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, enabled: userId !== null && userId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type GroupMemberRemoveQueryResult = NonNullable<Awaited<ReturnType<typeof groupMemberRemove>>>
+export type GroupMemberRemoveQueryError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
 
-    export type GroupMemberRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof groupMemberRemove>>>
 
-    export type GroupMemberRemoveMutationError = ErrorType<UnauthorizedResponse | ForbiddenResponse>
-    export type GroupMemberRemoveMutationVariables = {userId: string}
-
-    /**
+/**
  * Requires the owner role on the collection.
  * @summary Remove User from Group
  */
-export const useGroupMemberRemove = <TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError,GroupMemberRemoveMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof groupMemberRemove>>,
-        TError,
-        GroupMemberRemoveMutationVariables,
-        TContext
-      > => {
-      return useMutation(getGroupMemberRemoveMutationOptions(options), queryClient);
-    }
+export function useGroupMemberRemove<TData = Awaited<ReturnType<typeof groupMemberRemove>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ userId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupMemberRemove>>,
+          TError,
+          Awaited<ReturnType<typeof groupMemberRemove>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Remove User from Group
+ */
+export function useGroupMemberRemove<TData = Awaited<ReturnType<typeof groupMemberRemove>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof groupMemberRemove>>,
+          TError,
+          Awaited<ReturnType<typeof groupMemberRemove>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Remove User from Group
+ */
+export function useGroupMemberRemove<TData = Awaited<ReturnType<typeof groupMemberRemove>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Requires the owner role on the collection.
+ * @summary Remove User from Group
+ */
+export function useGroupMemberRemove<TData = Awaited<ReturnType<typeof groupMemberRemove>>, TError = ErrorType<UnauthorizedResponse | ForbiddenResponse>>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof groupMemberRemove>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupMemberRemoveQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

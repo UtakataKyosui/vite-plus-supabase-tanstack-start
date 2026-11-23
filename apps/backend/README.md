@@ -1,7 +1,19 @@
 # backend
 
 さまざまな物を管理するアプリのバックエンド。フロントエンドは `apps/web`（TanStack Start）、認証は Supabase Auth。
-現時点では API 契約（`openapi.yaml`）だけを持つ。
+HTTP は `apps/web` の TanStack Start server routes で受け、処理の中身はこのパッケージに置く。
+
+## 構成
+
+| 置き場所                        | 役割                                                                                                                                |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/backend/openapi.yaml`     | API 契約                                                                                                                            |
+| `apps/backend/src`              | ドメイン処理。入力と依存（Supabase クライアント、ユーザー、テナント）を受け取り、契約どおりの値を返す。`@tanstack/*` には依存しない |
+| `apps/backend/src/generated`    | Orval（zod）でスペックから生成したスキーマ。入力検証と型（`z.infer`）に使う                                                         |
+| `apps/web/src/routes/api/v1/**` | server routes。リクエストの解釈、認証とテナントの解決、ドメイン処理の呼び出し、エラーの HTTP 応答への変換だけを行う                 |
+| `apps/web/src/api/generated`    | Orval（react-query）で生成したクライアント                                                                                          |
+
+`apps/backend` は `apps/web` を import しない。パスは `/api` + スペックのパスになる（`/v1/tags/{id}` は `routes/api/v1/tags/$id.ts`）。
 
 API 契約は [sysadminsmedia/homebox](https://github.com/sysadminsmedia/homebox) の `backend/`（Go、commit `4d19c9e4d23ae3e55c12c844e4810b494a0f1318`）を起点にしており、そこから独自に変更していく。
 Homebox のライセンスは AGPL-3.0。
@@ -69,16 +81,20 @@ Homebox から引き継いだ補正:
 vp run check:openapi   # スペックを lint する（moon の check タスク）
 ```
 
-`apps/web` のクライアント（TanStack Query の hook と型）は Orval でこのスペックから生成し、`apps/web/src/api/generated` にコミットする。
-スペックを変えたら `apps/web` で `vp run generate:api`（moon では `web:generate-api`）を実行する。
+スペックを変えたら、両方の生成物を作り直す。
+
+```sh
+moon run backend:generate-schemas web:generate-api
+```
+
 タグ `Realtime` の operation は生成対象から外している。
 
 ## 未決事項
 
-- ランタイム: TanStack Start の server routes / server functions、独立した HTTP サーバー（Hono など）、Supabase Edge Functions のどれに載せるか
+- 認証アダプタ: server routes で `@supabase/ssr` の Cookie と `Authorization: Bearer` の両方を受け、`getUser()`（または `getClaims()`）で検証する。最初の認証付き operation と一緒に作る
+
 - 永続化: Supabase Postgres と Storage に寄せるか
 - API キー: Supabase Auth には無い。`/v1/users/self/api-keys` を残すか、残すならどう検証するか
 - 添付ファイルの配信: Storage の署名付き URL に置き換えるか（`<img src>` では Authorization ヘッダを付けられない）
 - リアルタイム: `/v1/ws/events` を Supabase Realtime で代替するか。Orval の生成対象からは外している
-- SSR からの API 呼び出し: `apps/web` の生成クライアントは相対 URL（`/api`）で呼ぶため、サーバー側で実行すると失敗する
 - 対象範囲を家財以外に広げるときの `entity` / `entity_type` の扱いと、スペックの `info.title`（今は `Homebox API`）

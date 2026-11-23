@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -187,6 +187,61 @@ export function useLabelTemplatesGetAll<TData = Awaited<ReturnType<typeof labelT
 
 
 
+export const getLabelTemplatesGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesGetAll>>> = ({ signal }) => labelTemplatesGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type LabelTemplatesGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesGetAll>>>
+export type LabelTemplatesGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Label Templates */
+export function useLabelTemplatesGetAllSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Label Templates */
+export function useLabelTemplatesGetAllSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Label Templates */
+export function useLabelTemplatesGetAllSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Label Templates */
+export function useLabelTemplatesGetAllSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getLabelTemplatesCreateUrl = () => {
 
 
@@ -213,52 +268,81 @@ export const labelTemplatesCreate = async (repoLabelTemplateCreate: RepoLabelTem
 
 
 
-export const getLabelTemplatesCreateMutationKey = () => ['labelTemplatesCreate'] as const;
-
-export const getLabelTemplatesCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError,LabelTemplatesCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError,LabelTemplatesCreateMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesCreate>>, LabelTemplatesCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  labelTemplatesCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesCreate>>>
-    export type LabelTemplatesCreateMutationBody = RepoLabelTemplateCreate
-    export type LabelTemplatesCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesCreateMutationVariables = {data: RepoLabelTemplateCreate}
-
-    /** @summary Create Label Template */
-export const useLabelTemplatesCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError,LabelTemplatesCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesCreate>>,
-        TError,
-        LabelTemplatesCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesCreateMutationOptions(options), queryClient);
+export const getLabelTemplatesCreateQueryKey = (repoLabelTemplateCreate?: RepoLabelTemplateCreate,) => {
+    return [
+    'POST', `/v1/label-templates`, repoLabelTemplateCreate
+    ] as const;
     }
-    export const getLabelTemplatesGetUrl = (id: string,) => {
+
+
+export const getLabelTemplatesCreateQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesCreate>>, TError = ErrorType<UnauthorizedResponse>>(repoLabelTemplateCreate: RepoLabelTemplateCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesCreateQueryKey(repoLabelTemplateCreate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesCreate>>> = ({ signal }) => labelTemplatesCreate(repoLabelTemplateCreate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesCreateQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesCreate>>>
+export type LabelTemplatesCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create Label Template */
+export function useLabelTemplatesCreate<TData = Awaited<ReturnType<typeof labelTemplatesCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoLabelTemplateCreate: RepoLabelTemplateCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesCreate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Label Template */
+export function useLabelTemplatesCreate<TData = Awaited<ReturnType<typeof labelTemplatesCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoLabelTemplateCreate: RepoLabelTemplateCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesCreate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Label Template */
+export function useLabelTemplatesCreate<TData = Awaited<ReturnType<typeof labelTemplatesCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoLabelTemplateCreate: RepoLabelTemplateCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Label Template */
+export function useLabelTemplatesCreate<TData = Awaited<ReturnType<typeof labelTemplatesCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoLabelTemplateCreate: RepoLabelTemplateCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesCreateQueryOptions(repoLabelTemplateCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesGetUrl = (id: string,) => {
 
 
 
@@ -358,6 +442,61 @@ export function useLabelTemplatesGet<TData = Awaited<ReturnType<typeof labelTemp
 
 
 
+export const getLabelTemplatesGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesGetQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesGet>>> = ({ signal }) => labelTemplatesGet(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type LabelTemplatesGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesGet>>>
+export type LabelTemplatesGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Label Template */
+export function useLabelTemplatesGetSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Template */
+export function useLabelTemplatesGetSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Template */
+export function useLabelTemplatesGetSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Template */
+export function useLabelTemplatesGetSuspense<TData = Awaited<ReturnType<typeof labelTemplatesGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesGetSuspenseQueryOptions(id,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getLabelTemplatesUpdateUrl = (id: string,) => {
 
 
@@ -385,52 +524,87 @@ export const labelTemplatesUpdate = async (id: string,
 
 
 
-export const getLabelTemplatesUpdateMutationKey = () => ['labelTemplatesUpdate'] as const;
-
-export const getLabelTemplatesUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError,LabelTemplatesUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError,LabelTemplatesUpdateMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesUpdate>>, LabelTemplatesUpdateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  labelTemplatesUpdate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesUpdate>>>
-    export type LabelTemplatesUpdateMutationBody = RepoLabelTemplateUpdate
-    export type LabelTemplatesUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesUpdateMutationVariables = {id: string;data: RepoLabelTemplateUpdate}
-
-    /** @summary Update Label Template */
-export const useLabelTemplatesUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError,LabelTemplatesUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesUpdate>>,
-        TError,
-        LabelTemplatesUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesUpdateMutationOptions(options), queryClient);
+export const getLabelTemplatesUpdateQueryKey = (id: string,
+    repoLabelTemplateUpdate?: RepoLabelTemplateUpdate,) => {
+    return [
+    'PUT', `/v1/label-templates/${id}`, repoLabelTemplateUpdate
+    ] as const;
     }
-    export const getLabelTemplatesDeleteUrl = (id: string,) => {
+
+
+export const getLabelTemplatesUpdateQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    repoLabelTemplateUpdate: RepoLabelTemplateUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesUpdateQueryKey(id,repoLabelTemplateUpdate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesUpdate>>> = ({ signal }) => labelTemplatesUpdate(id,repoLabelTemplateUpdate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesUpdate>>>
+export type LabelTemplatesUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update Label Template */
+export function useLabelTemplatesUpdate<TData = Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoLabelTemplateUpdate: RepoLabelTemplateUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Label Template */
+export function useLabelTemplatesUpdate<TData = Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoLabelTemplateUpdate: RepoLabelTemplateUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Label Template */
+export function useLabelTemplatesUpdate<TData = Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoLabelTemplateUpdate: RepoLabelTemplateUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Label Template */
+export function useLabelTemplatesUpdate<TData = Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoLabelTemplateUpdate: RepoLabelTemplateUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesUpdateQueryOptions(id,repoLabelTemplateUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesDeleteUrl = (id: string,) => {
 
 
 
@@ -456,52 +630,81 @@ export const labelTemplatesDelete = async (id: string, options?: Parameters<type
 
 
 
-export const getLabelTemplatesDeleteMutationKey = () => ['labelTemplatesDelete'] as const;
-
-export const getLabelTemplatesDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError,LabelTemplatesDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError,LabelTemplatesDeleteMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesDelete>>, LabelTemplatesDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  labelTemplatesDelete(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesDelete>>>
-
-    export type LabelTemplatesDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesDeleteMutationVariables = {id: string}
-
-    /** @summary Delete Label Template */
-export const useLabelTemplatesDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError,LabelTemplatesDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesDelete>>,
-        TError,
-        LabelTemplatesDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesDeleteMutationOptions(options), queryClient);
+export const getLabelTemplatesDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/label-templates/${id}`
+    ] as const;
     }
-    export const getLabelTemplatesDuplicateUrl = (id: string,) => {
+
+
+export const getLabelTemplatesDeleteQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesDeleteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesDelete>>> = ({ signal }) => labelTemplatesDelete(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesDelete>>>
+export type LabelTemplatesDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete Label Template */
+export function useLabelTemplatesDelete<TData = Awaited<ReturnType<typeof labelTemplatesDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesDelete>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Label Template */
+export function useLabelTemplatesDelete<TData = Awaited<ReturnType<typeof labelTemplatesDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesDelete>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Label Template */
+export function useLabelTemplatesDelete<TData = Awaited<ReturnType<typeof labelTemplatesDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Label Template */
+export function useLabelTemplatesDelete<TData = Awaited<ReturnType<typeof labelTemplatesDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesDuplicateUrl = (id: string,) => {
 
 
 
@@ -527,52 +730,81 @@ export const labelTemplatesDuplicate = async (id: string, options?: Parameters<t
 
 
 
-export const getLabelTemplatesDuplicateMutationKey = () => ['labelTemplatesDuplicate'] as const;
-
-export const getLabelTemplatesDuplicateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError,LabelTemplatesDuplicateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError,LabelTemplatesDuplicateMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesDuplicateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, LabelTemplatesDuplicateMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  labelTemplatesDuplicate(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesDuplicateMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesDuplicate>>>
-
-    export type LabelTemplatesDuplicateMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesDuplicateMutationVariables = {id: string}
-
-    /** @summary Duplicate Label Template */
-export const useLabelTemplatesDuplicate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError,LabelTemplatesDuplicateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesDuplicate>>,
-        TError,
-        LabelTemplatesDuplicateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesDuplicateMutationOptions(options), queryClient);
+export const getLabelTemplatesDuplicateQueryKey = (id: string,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/duplicate`
+    ] as const;
     }
-    export const getLabelTemplatesPreviewUrl = (id: string,
+
+
+export const getLabelTemplatesDuplicateQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesDuplicateQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesDuplicate>>> = ({ signal }) => labelTemplatesDuplicate(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesDuplicateQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesDuplicate>>>
+export type LabelTemplatesDuplicateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Duplicate Label Template */
+export function useLabelTemplatesDuplicate<TData = Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesDuplicate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesDuplicate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Duplicate Label Template */
+export function useLabelTemplatesDuplicate<TData = Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesDuplicate>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesDuplicate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Duplicate Label Template */
+export function useLabelTemplatesDuplicate<TData = Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Duplicate Label Template */
+export function useLabelTemplatesDuplicate<TData = Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesDuplicate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesDuplicateQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesPreviewUrl = (id: string,
     params?: LabelTemplatesPreviewParams,) => {
   const normalizedParams = new URLSearchParams();
 
@@ -687,6 +919,66 @@ export function useLabelTemplatesPreview<TData = Awaited<ReturnType<typeof label
 
 
 
+export const getLabelTemplatesPreviewSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesPreview>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: LabelTemplatesPreviewParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesPreviewQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesPreview>>> = ({ signal }) => labelTemplatesPreview(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type LabelTemplatesPreviewSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPreview>>>
+export type LabelTemplatesPreviewSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Preview Label Template */
+export function useLabelTemplatesPreviewSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPreview>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  LabelTemplatesPreviewParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Preview Label Template */
+export function useLabelTemplatesPreviewSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPreview>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: LabelTemplatesPreviewParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Preview Label Template */
+export function useLabelTemplatesPreviewSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPreview>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: LabelTemplatesPreviewParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Preview Label Template */
+export function useLabelTemplatesPreviewSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPreview>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: LabelTemplatesPreviewParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPreview>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesPreviewSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getLabelTemplatesPrintUrl = (id: string,) => {
 
 
@@ -714,52 +1006,87 @@ export const labelTemplatesPrint = async (id: string,
 
 
 
-export const getLabelTemplatesPrintMutationKey = () => ['labelTemplatesPrint'] as const;
-
-export const getLabelTemplatesPrintMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError,LabelTemplatesPrintMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError,LabelTemplatesPrintMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesPrintMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesPrint>>, LabelTemplatesPrintMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  labelTemplatesPrint(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesPrintMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPrint>>>
-    export type LabelTemplatesPrintMutationBody = V1LabelTemplatePrintRequest
-    export type LabelTemplatesPrintMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesPrintMutationVariables = {id: string;data: V1LabelTemplatePrintRequest}
-
-    /** @summary Print Labels */
-export const useLabelTemplatesPrint = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError,LabelTemplatesPrintMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesPrint>>,
-        TError,
-        LabelTemplatesPrintMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesPrintMutationOptions(options), queryClient);
+export const getLabelTemplatesPrintQueryKey = (id: string,
+    v1LabelTemplatePrintRequest?: V1LabelTemplatePrintRequest,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/print`, v1LabelTemplatePrintRequest
+    ] as const;
     }
-    export const getLabelTemplatesPrintLocationsUrl = (id: string,) => {
+
+
+export const getLabelTemplatesPrintQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesPrint>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    v1LabelTemplatePrintRequest: V1LabelTemplatePrintRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesPrintQueryKey(id,v1LabelTemplatePrintRequest);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesPrint>>> = ({ signal }) => labelTemplatesPrint(id,v1LabelTemplatePrintRequest, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesPrintQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPrint>>>
+export type LabelTemplatesPrintQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Print Labels */
+export function useLabelTemplatesPrint<TData = Awaited<ReturnType<typeof labelTemplatesPrint>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintRequest: V1LabelTemplatePrintRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesPrint>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesPrint>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Labels */
+export function useLabelTemplatesPrint<TData = Awaited<ReturnType<typeof labelTemplatesPrint>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintRequest: V1LabelTemplatePrintRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesPrint>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesPrint>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Labels */
+export function useLabelTemplatesPrint<TData = Awaited<ReturnType<typeof labelTemplatesPrint>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintRequest: V1LabelTemplatePrintRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Labels */
+export function useLabelTemplatesPrint<TData = Awaited<ReturnType<typeof labelTemplatesPrint>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintRequest: V1LabelTemplatePrintRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrint>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesPrintQueryOptions(id,v1LabelTemplatePrintRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesPrintLocationsUrl = (id: string,) => {
 
 
 
@@ -786,52 +1113,87 @@ export const labelTemplatesPrintLocations = async (id: string,
 
 
 
-export const getLabelTemplatesPrintLocationsMutationKey = () => ['labelTemplatesPrintLocations'] as const;
-
-export const getLabelTemplatesPrintLocationsMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError,LabelTemplatesPrintLocationsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError,LabelTemplatesPrintLocationsMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesPrintLocationsMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, LabelTemplatesPrintLocationsMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  labelTemplatesPrintLocations(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesPrintLocationsMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>>
-    export type LabelTemplatesPrintLocationsMutationBody = V1LabelTemplatePrintLocationsRequest
-    export type LabelTemplatesPrintLocationsMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesPrintLocationsMutationVariables = {id: string;data: V1LabelTemplatePrintLocationsRequest}
-
-    /** @summary Print Location Labels */
-export const useLabelTemplatesPrintLocations = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError,LabelTemplatesPrintLocationsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesPrintLocations>>,
-        TError,
-        LabelTemplatesPrintLocationsMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesPrintLocationsMutationOptions(options), queryClient);
+export const getLabelTemplatesPrintLocationsQueryKey = (id: string,
+    v1LabelTemplatePrintLocationsRequest?: V1LabelTemplatePrintLocationsRequest,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/print-locations`, v1LabelTemplatePrintLocationsRequest
+    ] as const;
     }
-    export const getLabelTemplatesRenderUrl = (id: string,) => {
+
+
+export const getLabelTemplatesPrintLocationsQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    v1LabelTemplatePrintLocationsRequest: V1LabelTemplatePrintLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesPrintLocationsQueryKey(id,v1LabelTemplatePrintLocationsRequest);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>> = ({ signal }) => labelTemplatesPrintLocations(id,v1LabelTemplatePrintLocationsRequest, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesPrintLocationsQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>>
+export type LabelTemplatesPrintLocationsQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Print Location Labels */
+export function useLabelTemplatesPrintLocations<TData = Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintLocationsRequest: V1LabelTemplatePrintLocationsRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesPrintLocations>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesPrintLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Location Labels */
+export function useLabelTemplatesPrintLocations<TData = Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintLocationsRequest: V1LabelTemplatePrintLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesPrintLocations>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesPrintLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Location Labels */
+export function useLabelTemplatesPrintLocations<TData = Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintLocationsRequest: V1LabelTemplatePrintLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Print Location Labels */
+export function useLabelTemplatesPrintLocations<TData = Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplatePrintLocationsRequest: V1LabelTemplatePrintLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPrintLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesPrintLocationsQueryOptions(id,v1LabelTemplatePrintLocationsRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesRenderUrl = (id: string,) => {
 
 
 
@@ -858,52 +1220,87 @@ export const labelTemplatesRender = async (id: string,
 
 
 
-export const getLabelTemplatesRenderMutationKey = () => ['labelTemplatesRender'] as const;
-
-export const getLabelTemplatesRenderMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError,LabelTemplatesRenderMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError,LabelTemplatesRenderMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesRenderMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesRender>>, LabelTemplatesRenderMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  labelTemplatesRender(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesRenderMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRender>>>
-    export type LabelTemplatesRenderMutationBody = V1LabelTemplateRenderRequest
-    export type LabelTemplatesRenderMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesRenderMutationVariables = {id: string;data: V1LabelTemplateRenderRequest}
-
-    /** @summary Render Label for Items */
-export const useLabelTemplatesRender = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError,LabelTemplatesRenderMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesRender>>,
-        TError,
-        LabelTemplatesRenderMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesRenderMutationOptions(options), queryClient);
+export const getLabelTemplatesRenderQueryKey = (id: string,
+    v1LabelTemplateRenderRequest?: V1LabelTemplateRenderRequest,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/render`, v1LabelTemplateRenderRequest
+    ] as const;
     }
-    export const getLabelTemplatesRenderAssetsUrl = (id: string,) => {
+
+
+export const getLabelTemplatesRenderQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesRender>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    v1LabelTemplateRenderRequest: V1LabelTemplateRenderRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesRenderQueryKey(id,v1LabelTemplateRenderRequest);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesRender>>> = ({ signal }) => labelTemplatesRender(id,v1LabelTemplateRenderRequest, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesRenderQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRender>>>
+export type LabelTemplatesRenderQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Render Label for Items */
+export function useLabelTemplatesRender<TData = Awaited<ReturnType<typeof labelTemplatesRender>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderRequest: V1LabelTemplateRenderRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRender>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRender>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Items */
+export function useLabelTemplatesRender<TData = Awaited<ReturnType<typeof labelTemplatesRender>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderRequest: V1LabelTemplateRenderRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRender>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRender>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Items */
+export function useLabelTemplatesRender<TData = Awaited<ReturnType<typeof labelTemplatesRender>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderRequest: V1LabelTemplateRenderRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Items */
+export function useLabelTemplatesRender<TData = Awaited<ReturnType<typeof labelTemplatesRender>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderRequest: V1LabelTemplateRenderRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRender>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesRenderQueryOptions(id,v1LabelTemplateRenderRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesRenderAssetsUrl = (id: string,) => {
 
 
 
@@ -931,55 +1328,99 @@ export const labelTemplatesRenderAssets = async (id: string,
 
 
 
-export const getLabelTemplatesRenderAssetsMutationKey = () => ['labelTemplatesRenderAssets'] as const;
-
-export const getLabelTemplatesRenderAssetsMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError,LabelTemplatesRenderAssetsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError,LabelTemplatesRenderAssetsMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesRenderAssetsMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getLabelTemplatesRenderAssetsQueryKey = (id: string,
+    v1LabelTemplateRenderAssetsRequest?: V1LabelTemplateRenderAssetsRequest,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/render-assets`, v1LabelTemplateRenderAssetsRequest
+    ] as const;
+    }
 
 
+export const getLabelTemplatesRenderAssetsQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    v1LabelTemplateRenderAssetsRequest: V1LabelTemplateRenderAssetsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesRenderAssetsQueryKey(id,v1LabelTemplateRenderAssetsRequest);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, LabelTemplatesRenderAssetsMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
 
-          return  labelTemplatesRenderAssets(id,data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>> = ({ signal }) => labelTemplatesRenderAssets(id,v1LabelTemplateRenderAssetsRequest, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type LabelTemplatesRenderAssetsQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>>
+export type LabelTemplatesRenderAssetsQueryError = ErrorType<UnauthorizedResponse>
 
-    export type LabelTemplatesRenderAssetsMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>>
-    export type LabelTemplatesRenderAssetsMutationBody = V1LabelTemplateRenderAssetsRequest
-    export type LabelTemplatesRenderAssetsMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesRenderAssetsMutationVariables = {id: string;data: V1LabelTemplateRenderAssetsRequest}
 
-    /**
+/**
  * Renders one label per asset ID in the range. Asset IDs that no entity has yet get a label with only the asset ID and asset URL, for pre-printing tags.
  * @summary Render Labels for an Asset ID Range
  */
-export const useLabelTemplatesRenderAssets = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError,LabelTemplatesRenderAssetsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesRenderAssets>>,
-        TError,
-        LabelTemplatesRenderAssetsMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesRenderAssetsMutationOptions(options), queryClient);
-    }
-    export const getLabelTemplatesRenderLocationsUrl = (id: string,) => {
+export function useLabelTemplatesRenderAssets<TData = Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderAssetsRequest: V1LabelTemplateRenderAssetsRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRenderAssets>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRenderAssets>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Renders one label per asset ID in the range. Asset IDs that no entity has yet get a label with only the asset ID and asset URL, for pre-printing tags.
+ * @summary Render Labels for an Asset ID Range
+ */
+export function useLabelTemplatesRenderAssets<TData = Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderAssetsRequest: V1LabelTemplateRenderAssetsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRenderAssets>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRenderAssets>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Renders one label per asset ID in the range. Asset IDs that no entity has yet get a label with only the asset ID and asset URL, for pre-printing tags.
+ * @summary Render Labels for an Asset ID Range
+ */
+export function useLabelTemplatesRenderAssets<TData = Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderAssetsRequest: V1LabelTemplateRenderAssetsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Renders one label per asset ID in the range. Asset IDs that no entity has yet get a label with only the asset ID and asset URL, for pre-printing tags.
+ * @summary Render Labels for an Asset ID Range
+ */
+export function useLabelTemplatesRenderAssets<TData = Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderAssetsRequest: V1LabelTemplateRenderAssetsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderAssets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesRenderAssetsQueryOptions(id,v1LabelTemplateRenderAssetsRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesRenderLocationsUrl = (id: string,) => {
 
 
 
@@ -1006,52 +1447,87 @@ export const labelTemplatesRenderLocations = async (id: string,
 
 
 
-export const getLabelTemplatesRenderLocationsMutationKey = () => ['labelTemplatesRenderLocations'] as const;
-
-export const getLabelTemplatesRenderLocationsMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError,LabelTemplatesRenderLocationsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError,LabelTemplatesRenderLocationsMutationVariables, TContext> => {
-
-const mutationKey = getLabelTemplatesRenderLocationsMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, LabelTemplatesRenderLocationsMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  labelTemplatesRenderLocations(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LabelTemplatesRenderLocationsMutationResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>>
-    export type LabelTemplatesRenderLocationsMutationBody = V1LabelTemplateRenderLocationsRequest
-    export type LabelTemplatesRenderLocationsMutationError = ErrorType<UnauthorizedResponse>
-    export type LabelTemplatesRenderLocationsMutationVariables = {id: string;data: V1LabelTemplateRenderLocationsRequest}
-
-    /** @summary Render Label for Locations */
-export const useLabelTemplatesRenderLocations = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError,LabelTemplatesRenderLocationsMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof labelTemplatesRenderLocations>>,
-        TError,
-        LabelTemplatesRenderLocationsMutationVariables,
-        TContext
-      > => {
-      return useMutation(getLabelTemplatesRenderLocationsMutationOptions(options), queryClient);
+export const getLabelTemplatesRenderLocationsQueryKey = (id: string,
+    v1LabelTemplateRenderLocationsRequest?: V1LabelTemplateRenderLocationsRequest,) => {
+    return [
+    'POST', `/v1/label-templates/${id}/render-locations`, v1LabelTemplateRenderLocationsRequest
+    ] as const;
     }
-    export const getLabelTemplatesBarcodeFormatsUrl = () => {
+
+
+export const getLabelTemplatesRenderLocationsQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    v1LabelTemplateRenderLocationsRequest: V1LabelTemplateRenderLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesRenderLocationsQueryKey(id,v1LabelTemplateRenderLocationsRequest);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>> = ({ signal }) => labelTemplatesRenderLocations(id,v1LabelTemplateRenderLocationsRequest, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LabelTemplatesRenderLocationsQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>>
+export type LabelTemplatesRenderLocationsQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Render Label for Locations */
+export function useLabelTemplatesRenderLocations<TData = Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderLocationsRequest: V1LabelTemplateRenderLocationsRequest, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRenderLocations>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRenderLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Locations */
+export function useLabelTemplatesRenderLocations<TData = Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderLocationsRequest: V1LabelTemplateRenderLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof labelTemplatesRenderLocations>>,
+          TError,
+          Awaited<ReturnType<typeof labelTemplatesRenderLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Locations */
+export function useLabelTemplatesRenderLocations<TData = Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderLocationsRequest: V1LabelTemplateRenderLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Render Label for Locations */
+export function useLabelTemplatesRenderLocations<TData = Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    v1LabelTemplateRenderLocationsRequest: V1LabelTemplateRenderLocationsRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof labelTemplatesRenderLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesRenderLocationsQueryOptions(id,v1LabelTemplateRenderLocationsRequest,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesBarcodeFormatsUrl = () => {
 
 
 
@@ -1142,6 +1618,61 @@ export function useLabelTemplatesBarcodeFormats<TData = Awaited<ReturnType<typeo
   const queryOptions = getLabelTemplatesBarcodeFormatsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesBarcodeFormatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesBarcodeFormatsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>> = ({ signal }) => labelTemplatesBarcodeFormats({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type LabelTemplatesBarcodeFormatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>>
+export type LabelTemplatesBarcodeFormatsSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Supported Barcode Formats */
+export function useLabelTemplatesBarcodeFormatsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Supported Barcode Formats */
+export function useLabelTemplatesBarcodeFormatsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Supported Barcode Formats */
+export function useLabelTemplatesBarcodeFormatsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Supported Barcode Formats */
+export function useLabelTemplatesBarcodeFormatsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesBarcodeFormats>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesBarcodeFormatsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
@@ -1242,6 +1773,61 @@ export function useLabelTemplatesPresets<TData = Awaited<ReturnType<typeof label
   const queryOptions = getLabelTemplatesPresetsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getLabelTemplatesPresetsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof labelTemplatesPresets>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getLabelTemplatesPresetsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof labelTemplatesPresets>>> = ({ signal }) => labelTemplatesPresets({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type LabelTemplatesPresetsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof labelTemplatesPresets>>>
+export type LabelTemplatesPresetsSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Label Size Presets */
+export function useLabelTemplatesPresetsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPresets>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Size Presets */
+export function useLabelTemplatesPresetsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPresets>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Size Presets */
+export function useLabelTemplatesPresetsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPresets>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Label Size Presets */
+export function useLabelTemplatesPresetsSuspense<TData = Awaited<ReturnType<typeof labelTemplatesPresets>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof labelTemplatesPresets>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getLabelTemplatesPresetsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

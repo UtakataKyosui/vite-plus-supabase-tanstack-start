@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -178,6 +178,61 @@ export function useTagsGetAll<TData = Awaited<ReturnType<typeof tagsGetAll>>, TE
 
 
 
+export const getTagsGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof tagsGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTagsGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tagsGetAll>>> = ({ signal }) => tagsGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type TagsGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof tagsGetAll>>>
+export type TagsGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Tags */
+export function useTagsGetAllSuspense<TData = Awaited<ReturnType<typeof tagsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Tags */
+export function useTagsGetAllSuspense<TData = Awaited<ReturnType<typeof tagsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Tags */
+export function useTagsGetAllSuspense<TData = Awaited<ReturnType<typeof tagsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Tags */
+export function useTagsGetAllSuspense<TData = Awaited<ReturnType<typeof tagsGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagsGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTagsGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getTagsCreateUrl = () => {
 
 
@@ -204,52 +259,81 @@ export const tagsCreate = async (repoTagCreate: RepoTagCreate, options?: Paramet
 
 
 
-export const getTagsCreateMutationKey = () => ['tagsCreate'] as const;
-
-export const getTagsCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagsCreate>>, TError,TagsCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof tagsCreate>>, TError,TagsCreateMutationVariables, TContext> => {
-
-const mutationKey = getTagsCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof tagsCreate>>, TagsCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  tagsCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type TagsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof tagsCreate>>>
-    export type TagsCreateMutationBody = RepoTagCreate
-    export type TagsCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type TagsCreateMutationVariables = {data: RepoTagCreate}
-
-    /** @summary Create Tag */
-export const useTagsCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagsCreate>>, TError,TagsCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof tagsCreate>>,
-        TError,
-        TagsCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getTagsCreateMutationOptions(options), queryClient);
+export const getTagsCreateQueryKey = (repoTagCreate?: RepoTagCreate,) => {
+    return [
+    'POST', `/v1/tags`, repoTagCreate
+    ] as const;
     }
-    export const getTagGetUrl = (id: string,) => {
+
+
+export const getTagsCreateQueryOptions = <TData = Awaited<ReturnType<typeof tagsCreate>>, TError = ErrorType<UnauthorizedResponse>>(repoTagCreate: RepoTagCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTagsCreateQueryKey(repoTagCreate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tagsCreate>>> = ({ signal }) => tagsCreate(repoTagCreate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TagsCreateQueryResult = NonNullable<Awaited<ReturnType<typeof tagsCreate>>>
+export type TagsCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create Tag */
+export function useTagsCreate<TData = Awaited<ReturnType<typeof tagsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoTagCreate: RepoTagCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof tagsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Tag */
+export function useTagsCreate<TData = Awaited<ReturnType<typeof tagsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoTagCreate: RepoTagCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagsCreate>>,
+          TError,
+          Awaited<ReturnType<typeof tagsCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Tag */
+export function useTagsCreate<TData = Awaited<ReturnType<typeof tagsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoTagCreate: RepoTagCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Tag */
+export function useTagsCreate<TData = Awaited<ReturnType<typeof tagsCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoTagCreate: RepoTagCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagsCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTagsCreateQueryOptions(repoTagCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getTagGetUrl = (id: string,) => {
 
 
 
@@ -349,6 +433,61 @@ export function useTagGet<TData = Awaited<ReturnType<typeof tagGet>>, TError = E
 
 
 
+export const getTagGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof tagGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTagGetQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tagGet>>> = ({ signal }) => tagGet(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type TagGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof tagGet>>>
+export type TagGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Tag */
+export function useTagGetSuspense<TData = Awaited<ReturnType<typeof tagGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tag */
+export function useTagGetSuspense<TData = Awaited<ReturnType<typeof tagGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tag */
+export function useTagGetSuspense<TData = Awaited<ReturnType<typeof tagGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tag */
+export function useTagGetSuspense<TData = Awaited<ReturnType<typeof tagGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof tagGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTagGetSuspenseQueryOptions(id,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getTagUpdateUrl = (id: string,) => {
 
 
@@ -376,52 +515,87 @@ export const tagUpdate = async (id: string,
 
 
 
-export const getTagUpdateMutationKey = () => ['tagUpdate'] as const;
-
-export const getTagUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagUpdate>>, TError,TagUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof tagUpdate>>, TError,TagUpdateMutationVariables, TContext> => {
-
-const mutationKey = getTagUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof tagUpdate>>, TagUpdateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  tagUpdate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type TagUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof tagUpdate>>>
-    export type TagUpdateMutationBody = RepoTagUpdate
-    export type TagUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type TagUpdateMutationVariables = {id: string;data: RepoTagUpdate}
-
-    /** @summary Update Tag */
-export const useTagUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagUpdate>>, TError,TagUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof tagUpdate>>,
-        TError,
-        TagUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getTagUpdateMutationOptions(options), queryClient);
+export const getTagUpdateQueryKey = (id: string,
+    repoTagUpdate?: RepoTagUpdate,) => {
+    return [
+    'PUT', `/v1/tags/${id}`, repoTagUpdate
+    ] as const;
     }
-    export const getTagDeleteUrl = (id: string,) => {
+
+
+export const getTagUpdateQueryOptions = <TData = Awaited<ReturnType<typeof tagUpdate>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    repoTagUpdate: RepoTagUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTagUpdateQueryKey(id,repoTagUpdate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tagUpdate>>> = ({ signal }) => tagUpdate(id,repoTagUpdate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TagUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof tagUpdate>>>
+export type TagUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update Tag */
+export function useTagUpdate<TData = Awaited<ReturnType<typeof tagUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoTagUpdate: RepoTagUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof tagUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Tag */
+export function useTagUpdate<TData = Awaited<ReturnType<typeof tagUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoTagUpdate: RepoTagUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof tagUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Tag */
+export function useTagUpdate<TData = Awaited<ReturnType<typeof tagUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoTagUpdate: RepoTagUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Tag */
+export function useTagUpdate<TData = Awaited<ReturnType<typeof tagUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoTagUpdate: RepoTagUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTagUpdateQueryOptions(id,repoTagUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getTagDeleteUrl = (id: string,) => {
 
 
 
@@ -447,48 +621,77 @@ export const tagDelete = async (id: string, options?: Parameters<typeof apiFetch
 
 
 
-export const getTagDeleteMutationKey = () => ['tagDelete'] as const;
-
-export const getTagDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagDelete>>, TError,TagDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof tagDelete>>, TError,TagDeleteMutationVariables, TContext> => {
-
-const mutationKey = getTagDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof tagDelete>>, TagDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  tagDelete(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type TagDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof tagDelete>>>
-
-    export type TagDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type TagDeleteMutationVariables = {id: string}
-
-    /** @summary Delete Tag */
-export const useTagDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof tagDelete>>, TError,TagDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof tagDelete>>,
-        TError,
-        TagDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getTagDeleteMutationOptions(options), queryClient);
+export const getTagDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/tags/${id}`
+    ] as const;
     }
+
+
+export const getTagDeleteQueryOptions = <TData = Awaited<ReturnType<typeof tagDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTagDeleteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tagDelete>>> = ({ signal }) => tagDelete(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TagDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof tagDelete>>>
+export type TagDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete Tag */
+export function useTagDelete<TData = Awaited<ReturnType<typeof tagDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagDelete>>,
+          TError,
+          Awaited<ReturnType<typeof tagDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Tag */
+export function useTagDelete<TData = Awaited<ReturnType<typeof tagDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tagDelete>>,
+          TError,
+          Awaited<ReturnType<typeof tagDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Tag */
+export function useTagDelete<TData = Awaited<ReturnType<typeof tagDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Tag */
+export function useTagDelete<TData = Awaited<ReturnType<typeof tagDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tagDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTagDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

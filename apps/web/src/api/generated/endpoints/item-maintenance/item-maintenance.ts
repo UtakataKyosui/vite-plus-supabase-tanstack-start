@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -193,6 +193,66 @@ export function useMaintenanceLogGet<TData = Awaited<ReturnType<typeof maintenan
 
 
 
+export const getMaintenanceLogGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof maintenanceLogGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: MaintenanceLogGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getMaintenanceLogGetQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof maintenanceLogGet>>> = ({ signal }) => maintenanceLogGet(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type MaintenanceLogGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof maintenanceLogGet>>>
+export type MaintenanceLogGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Maintenance Log */
+export function useMaintenanceLogGetSuspense<TData = Awaited<ReturnType<typeof maintenanceLogGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  MaintenanceLogGetParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Maintenance Log */
+export function useMaintenanceLogGetSuspense<TData = Awaited<ReturnType<typeof maintenanceLogGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: MaintenanceLogGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Maintenance Log */
+export function useMaintenanceLogGetSuspense<TData = Awaited<ReturnType<typeof maintenanceLogGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: MaintenanceLogGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Maintenance Log */
+export function useMaintenanceLogGetSuspense<TData = Awaited<ReturnType<typeof maintenanceLogGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: MaintenanceLogGetParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof maintenanceLogGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getMaintenanceLogGetSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getMaintenanceEntryCreateUrl = (id: string,) => {
 
 
@@ -220,48 +280,83 @@ export const maintenanceEntryCreate = async (id: string,
 
 
 
-export const getMaintenanceEntryCreateMutationKey = () => ['maintenanceEntryCreate'] as const;
-
-export const getMaintenanceEntryCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError,MaintenanceEntryCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError,MaintenanceEntryCreateMutationVariables, TContext> => {
-
-const mutationKey = getMaintenanceEntryCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof maintenanceEntryCreate>>, MaintenanceEntryCreateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  maintenanceEntryCreate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type MaintenanceEntryCreateMutationResult = NonNullable<Awaited<ReturnType<typeof maintenanceEntryCreate>>>
-    export type MaintenanceEntryCreateMutationBody = RepoMaintenanceEntryCreate
-    export type MaintenanceEntryCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type MaintenanceEntryCreateMutationVariables = {id: string;data: RepoMaintenanceEntryCreate}
-
-    /** @summary Create Maintenance Entry */
-export const useMaintenanceEntryCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError,MaintenanceEntryCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof maintenanceEntryCreate>>,
-        TError,
-        MaintenanceEntryCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getMaintenanceEntryCreateMutationOptions(options), queryClient);
+export const getMaintenanceEntryCreateQueryKey = (id: string,
+    repoMaintenanceEntryCreate?: RepoMaintenanceEntryCreate,) => {
+    return [
+    'POST', `/v1/entities/${id}/maintenance`, repoMaintenanceEntryCreate
+    ] as const;
     }
+
+
+export const getMaintenanceEntryCreateQueryOptions = <TData = Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    repoMaintenanceEntryCreate: RepoMaintenanceEntryCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getMaintenanceEntryCreateQueryKey(id,repoMaintenanceEntryCreate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof maintenanceEntryCreate>>> = ({ signal }) => maintenanceEntryCreate(id,repoMaintenanceEntryCreate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type MaintenanceEntryCreateQueryResult = NonNullable<Awaited<ReturnType<typeof maintenanceEntryCreate>>>
+export type MaintenanceEntryCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create Maintenance Entry */
+export function useMaintenanceEntryCreate<TData = Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoMaintenanceEntryCreate: RepoMaintenanceEntryCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof maintenanceEntryCreate>>,
+          TError,
+          Awaited<ReturnType<typeof maintenanceEntryCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Maintenance Entry */
+export function useMaintenanceEntryCreate<TData = Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoMaintenanceEntryCreate: RepoMaintenanceEntryCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof maintenanceEntryCreate>>,
+          TError,
+          Awaited<ReturnType<typeof maintenanceEntryCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Maintenance Entry */
+export function useMaintenanceEntryCreate<TData = Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoMaintenanceEntryCreate: RepoMaintenanceEntryCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Maintenance Entry */
+export function useMaintenanceEntryCreate<TData = Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoMaintenanceEntryCreate: RepoMaintenanceEntryCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof maintenanceEntryCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getMaintenanceEntryCreateQueryOptions(id,repoMaintenanceEntryCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

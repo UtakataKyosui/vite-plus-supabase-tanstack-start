@@ -28,3 +28,6 @@ dist/
 # moon
 .moon/cache
 .moon/docker
+
+# TanStack Start temp files
+.tanstack/

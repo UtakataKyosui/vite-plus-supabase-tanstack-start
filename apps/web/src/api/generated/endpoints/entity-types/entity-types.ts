@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -177,6 +177,61 @@ export function useEntityTypeGetAll<TData = Awaited<ReturnType<typeof entityType
 
 
 
+export const getEntityTypeGetAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof entityTypeGetAll>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityTypeGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityTypeGetAll>>> = ({ signal }) => entityTypeGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type EntityTypeGetAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof entityTypeGetAll>>>
+export type EntityTypeGetAllSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get All Entity Types */
+export function useEntityTypeGetAllSuspense<TData = Awaited<ReturnType<typeof entityTypeGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Entity Types */
+export function useEntityTypeGetAllSuspense<TData = Awaited<ReturnType<typeof entityTypeGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Entity Types */
+export function useEntityTypeGetAllSuspense<TData = Awaited<ReturnType<typeof entityTypeGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get All Entity Types */
+export function useEntityTypeGetAllSuspense<TData = Awaited<ReturnType<typeof entityTypeGetAll>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof entityTypeGetAll>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityTypeGetAllSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getEntityTypeCreateUrl = () => {
 
 
@@ -203,52 +258,81 @@ export const entityTypeCreate = async (repoEntityTypeCreate: RepoEntityTypeCreat
 
 
 
-export const getEntityTypeCreateMutationKey = () => ['entityTypeCreate'] as const;
-
-export const getEntityTypeCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError,EntityTypeCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError,EntityTypeCreateMutationVariables, TContext> => {
-
-const mutationKey = getEntityTypeCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityTypeCreate>>, EntityTypeCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  entityTypeCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityTypeCreateMutationResult = NonNullable<Awaited<ReturnType<typeof entityTypeCreate>>>
-    export type EntityTypeCreateMutationBody = RepoEntityTypeCreate
-    export type EntityTypeCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type EntityTypeCreateMutationVariables = {data: RepoEntityTypeCreate}
-
-    /** @summary Create Entity Type */
-export const useEntityTypeCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError,EntityTypeCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityTypeCreate>>,
-        TError,
-        EntityTypeCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityTypeCreateMutationOptions(options), queryClient);
+export const getEntityTypeCreateQueryKey = (repoEntityTypeCreate?: RepoEntityTypeCreate,) => {
+    return [
+    'POST', `/v1/entity-types`, repoEntityTypeCreate
+    ] as const;
     }
-    export const getEntityTypeUpdateUrl = (id: string,) => {
+
+
+export const getEntityTypeCreateQueryOptions = <TData = Awaited<ReturnType<typeof entityTypeCreate>>, TError = ErrorType<UnauthorizedResponse>>(repoEntityTypeCreate: RepoEntityTypeCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityTypeCreateQueryKey(repoEntityTypeCreate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityTypeCreate>>> = ({ signal }) => entityTypeCreate(repoEntityTypeCreate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityTypeCreateQueryResult = NonNullable<Awaited<ReturnType<typeof entityTypeCreate>>>
+export type EntityTypeCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create Entity Type */
+export function useEntityTypeCreate<TData = Awaited<ReturnType<typeof entityTypeCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoEntityTypeCreate: RepoEntityTypeCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Type */
+export function useEntityTypeCreate<TData = Awaited<ReturnType<typeof entityTypeCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoEntityTypeCreate: RepoEntityTypeCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeCreate>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Type */
+export function useEntityTypeCreate<TData = Awaited<ReturnType<typeof entityTypeCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoEntityTypeCreate: RepoEntityTypeCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create Entity Type */
+export function useEntityTypeCreate<TData = Awaited<ReturnType<typeof entityTypeCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoEntityTypeCreate: RepoEntityTypeCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityTypeCreateQueryOptions(repoEntityTypeCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEntityTypeUpdateUrl = (id: string,) => {
 
 
 
@@ -275,52 +359,87 @@ export const entityTypeUpdate = async (id: string,
 
 
 
-export const getEntityTypeUpdateMutationKey = () => ['entityTypeUpdate'] as const;
-
-export const getEntityTypeUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError,EntityTypeUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError,EntityTypeUpdateMutationVariables, TContext> => {
-
-const mutationKey = getEntityTypeUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityTypeUpdate>>, EntityTypeUpdateMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  entityTypeUpdate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityTypeUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof entityTypeUpdate>>>
-    export type EntityTypeUpdateMutationBody = RepoEntityTypeUpdate
-    export type EntityTypeUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type EntityTypeUpdateMutationVariables = {id: string;data: RepoEntityTypeUpdate}
-
-    /** @summary Update Entity Type */
-export const useEntityTypeUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError,EntityTypeUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityTypeUpdate>>,
-        TError,
-        EntityTypeUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityTypeUpdateMutationOptions(options), queryClient);
+export const getEntityTypeUpdateQueryKey = (id: string,
+    repoEntityTypeUpdate?: RepoEntityTypeUpdate,) => {
+    return [
+    'PUT', `/v1/entity-types/${id}`, repoEntityTypeUpdate
+    ] as const;
     }
-    export const getEntityTypeDeleteUrl = (id: string,) => {
+
+
+export const getEntityTypeUpdateQueryOptions = <TData = Awaited<ReturnType<typeof entityTypeUpdate>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    repoEntityTypeUpdate: RepoEntityTypeUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityTypeUpdateQueryKey(id,repoEntityTypeUpdate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityTypeUpdate>>> = ({ signal }) => entityTypeUpdate(id,repoEntityTypeUpdate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityTypeUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof entityTypeUpdate>>>
+export type EntityTypeUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update Entity Type */
+export function useEntityTypeUpdate<TData = Awaited<ReturnType<typeof entityTypeUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoEntityTypeUpdate: RepoEntityTypeUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Type */
+export function useEntityTypeUpdate<TData = Awaited<ReturnType<typeof entityTypeUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoEntityTypeUpdate: RepoEntityTypeUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Type */
+export function useEntityTypeUpdate<TData = Awaited<ReturnType<typeof entityTypeUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoEntityTypeUpdate: RepoEntityTypeUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Entity Type */
+export function useEntityTypeUpdate<TData = Awaited<ReturnType<typeof entityTypeUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    repoEntityTypeUpdate: RepoEntityTypeUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityTypeUpdateQueryOptions(id,repoEntityTypeUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEntityTypeDeleteUrl = (id: string,) => {
 
 
 
@@ -346,48 +465,77 @@ export const entityTypeDelete = async (id: string, options?: Parameters<typeof a
 
 
 
-export const getEntityTypeDeleteMutationKey = () => ['entityTypeDelete'] as const;
-
-export const getEntityTypeDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError,EntityTypeDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError,EntityTypeDeleteMutationVariables, TContext> => {
-
-const mutationKey = getEntityTypeDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof entityTypeDelete>>, EntityTypeDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  entityTypeDelete(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EntityTypeDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof entityTypeDelete>>>
-
-    export type EntityTypeDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type EntityTypeDeleteMutationVariables = {id: string}
-
-    /** @summary Delete Entity Type */
-export const useEntityTypeDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError,EntityTypeDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof entityTypeDelete>>,
-        TError,
-        EntityTypeDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getEntityTypeDeleteMutationOptions(options), queryClient);
+export const getEntityTypeDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/entity-types/${id}`
+    ] as const;
     }
+
+
+export const getEntityTypeDeleteQueryOptions = <TData = Awaited<ReturnType<typeof entityTypeDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEntityTypeDeleteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof entityTypeDelete>>> = ({ signal }) => entityTypeDelete(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EntityTypeDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof entityTypeDelete>>>
+export type EntityTypeDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete Entity Type */
+export function useEntityTypeDelete<TData = Awaited<ReturnType<typeof entityTypeDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeDelete>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Type */
+export function useEntityTypeDelete<TData = Awaited<ReturnType<typeof entityTypeDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof entityTypeDelete>>,
+          TError,
+          Awaited<ReturnType<typeof entityTypeDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Type */
+export function useEntityTypeDelete<TData = Awaited<ReturnType<typeof entityTypeDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Entity Type */
+export function useEntityTypeDelete<TData = Awaited<ReturnType<typeof entityTypeDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof entityTypeDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEntityTypeDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

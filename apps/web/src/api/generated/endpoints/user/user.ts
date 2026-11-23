@@ -9,22 +9,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -183,6 +183,61 @@ export function useUserSelf<TData = Awaited<ReturnType<typeof userSelf>>, TError
 
 
 
+export const getUserSelfSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof userSelf>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserSelfQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userSelf>>> = ({ signal }) => userSelf({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type UserSelfSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof userSelf>>>
+export type UserSelfSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get User Self */
+export function useUserSelfSuspense<TData = Awaited<ReturnType<typeof userSelf>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get User Self */
+export function useUserSelfSuspense<TData = Awaited<ReturnType<typeof userSelf>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get User Self */
+export function useUserSelfSuspense<TData = Awaited<ReturnType<typeof userSelf>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get User Self */
+export function useUserSelfSuspense<TData = Awaited<ReturnType<typeof userSelf>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelf>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserSelfSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getUserSelfUpdateUrl = () => {
 
 
@@ -209,52 +264,81 @@ export const userSelfUpdate = async (repoUserUpdate: RepoUserUpdate, options?: P
 
 
 
-export const getUserSelfUpdateMutationKey = () => ['userSelfUpdate'] as const;
-
-export const getUserSelfUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError,UserSelfUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError,UserSelfUpdateMutationVariables, TContext> => {
-
-const mutationKey = getUserSelfUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userSelfUpdate>>, UserSelfUpdateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  userSelfUpdate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UserSelfUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof userSelfUpdate>>>
-    export type UserSelfUpdateMutationBody = RepoUserUpdate
-    export type UserSelfUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type UserSelfUpdateMutationVariables = {data: RepoUserUpdate}
-
-    /** @summary Update Account */
-export const useUserSelfUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError,UserSelfUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof userSelfUpdate>>,
-        TError,
-        UserSelfUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getUserSelfUpdateMutationOptions(options), queryClient);
+export const getUserSelfUpdateQueryKey = (repoUserUpdate?: RepoUserUpdate,) => {
+    return [
+    'PUT', `/v1/users/self`, repoUserUpdate
+    ] as const;
     }
-    export const getUserSelfDeleteUrl = () => {
+
+
+export const getUserSelfUpdateQueryOptions = <TData = Awaited<ReturnType<typeof userSelfUpdate>>, TError = ErrorType<UnauthorizedResponse>>(repoUserUpdate: RepoUserUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserSelfUpdateQueryKey(repoUserUpdate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userSelfUpdate>>> = ({ signal }) => userSelfUpdate(repoUserUpdate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserSelfUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof userSelfUpdate>>>
+export type UserSelfUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update Account */
+export function useUserSelfUpdate<TData = Awaited<ReturnType<typeof userSelfUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoUserUpdate: RepoUserUpdate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Account */
+export function useUserSelfUpdate<TData = Awaited<ReturnType<typeof userSelfUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoUserUpdate: RepoUserUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Account */
+export function useUserSelfUpdate<TData = Awaited<ReturnType<typeof userSelfUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoUserUpdate: RepoUserUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update Account */
+export function useUserSelfUpdate<TData = Awaited<ReturnType<typeof userSelfUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoUserUpdate: RepoUserUpdate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserSelfUpdateQueryOptions(repoUserUpdate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getUserSelfDeleteUrl = () => {
 
 
 
@@ -280,52 +364,81 @@ export const userSelfDelete = async ( options?: Parameters<typeof apiFetch>[1]):
 
 
 
-export const getUserSelfDeleteMutationKey = () => ['userSelfDelete'] as const;
-
-export const getUserSelfDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError,void, TContext> => {
-
-const mutationKey = getUserSelfDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userSelfDelete>>, void> = () => {
-
-
-          return  userSelfDelete(requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UserSelfDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof userSelfDelete>>>
-
-    export type UserSelfDeleteMutationError = ErrorType<UnauthorizedResponse>
-
-
-    /** @summary Delete Account */
-export const useUserSelfDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof userSelfDelete>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getUserSelfDeleteMutationOptions(options), queryClient);
+export const getUserSelfDeleteQueryKey = () => {
+    return [
+    'DELETE', `/v1/users/self`
+    ] as const;
     }
-    export const getUserAPIKeysListUrl = () => {
+
+
+export const getUserSelfDeleteQueryOptions = <TData = Awaited<ReturnType<typeof userSelfDelete>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserSelfDeleteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userSelfDelete>>> = ({ signal }) => userSelfDelete({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserSelfDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof userSelfDelete>>>
+export type UserSelfDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete Account */
+export function useUserSelfDelete<TData = Awaited<ReturnType<typeof userSelfDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfDelete>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Account */
+export function useUserSelfDelete<TData = Awaited<ReturnType<typeof userSelfDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfDelete>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Account */
+export function useUserSelfDelete<TData = Awaited<ReturnType<typeof userSelfDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete Account */
+export function useUserSelfDelete<TData = Awaited<ReturnType<typeof userSelfDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserSelfDeleteQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getUserAPIKeysListUrl = () => {
 
 
 
@@ -425,6 +538,61 @@ export function useUserAPIKeysList<TData = Awaited<ReturnType<typeof userAPIKeys
 
 
 
+export const getUserAPIKeysListSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeysList>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserAPIKeysListQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userAPIKeysList>>> = ({ signal }) => userAPIKeysList({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type UserAPIKeysListSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof userAPIKeysList>>>
+export type UserAPIKeysListSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary List API Keys */
+export function useUserAPIKeysListSuspense<TData = Awaited<ReturnType<typeof userAPIKeysList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary List API Keys */
+export function useUserAPIKeysListSuspense<TData = Awaited<ReturnType<typeof userAPIKeysList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary List API Keys */
+export function useUserAPIKeysListSuspense<TData = Awaited<ReturnType<typeof userAPIKeysList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary List API Keys */
+export function useUserAPIKeysListSuspense<TData = Awaited<ReturnType<typeof userAPIKeysList>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userAPIKeysList>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserAPIKeysListSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getUserAPIKeyCreateUrl = () => {
 
 
@@ -451,52 +619,81 @@ export const userAPIKeyCreate = async (repoAPIKeyCreate: RepoAPIKeyCreate, optio
 
 
 
-export const getUserAPIKeyCreateMutationKey = () => ['userAPIKeyCreate'] as const;
-
-export const getUserAPIKeyCreateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError,UserAPIKeyCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError,UserAPIKeyCreateMutationVariables, TContext> => {
-
-const mutationKey = getUserAPIKeyCreateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userAPIKeyCreate>>, UserAPIKeyCreateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  userAPIKeyCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UserAPIKeyCreateMutationResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyCreate>>>
-    export type UserAPIKeyCreateMutationBody = RepoAPIKeyCreate
-    export type UserAPIKeyCreateMutationError = ErrorType<UnauthorizedResponse>
-    export type UserAPIKeyCreateMutationVariables = {data: RepoAPIKeyCreate}
-
-    /** @summary Create API Key */
-export const useUserAPIKeyCreate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError,UserAPIKeyCreateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof userAPIKeyCreate>>,
-        TError,
-        UserAPIKeyCreateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getUserAPIKeyCreateMutationOptions(options), queryClient);
+export const getUserAPIKeyCreateQueryKey = (repoAPIKeyCreate?: RepoAPIKeyCreate,) => {
+    return [
+    'POST', `/v1/users/self/api-keys`, repoAPIKeyCreate
+    ] as const;
     }
-    export const getUserAPIKeyDeleteUrl = (id: string,) => {
+
+
+export const getUserAPIKeyCreateQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserAPIKeyCreateQueryKey(repoAPIKeyCreate);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userAPIKeyCreate>>> = ({ signal }) => userAPIKeyCreate(repoAPIKeyCreate, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserAPIKeyCreateQueryResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyCreate>>>
+export type UserAPIKeyCreateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create API Key */
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoAPIKeyCreate: RepoAPIKeyCreate, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userAPIKeyCreate>>,
+          TError,
+          Awaited<ReturnType<typeof userAPIKeyCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create API Key */
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userAPIKeyCreate>>,
+          TError,
+          Awaited<ReturnType<typeof userAPIKeyCreate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create API Key */
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create API Key */
+export function useUserAPIKeyCreate<TData = Awaited<ReturnType<typeof userAPIKeyCreate>>, TError = ErrorType<UnauthorizedResponse>>(
+ repoAPIKeyCreate: RepoAPIKeyCreate, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyCreate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserAPIKeyCreateQueryOptions(repoAPIKeyCreate,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getUserAPIKeyDeleteUrl = (id: string,) => {
 
 
 
@@ -522,52 +719,81 @@ export const userAPIKeyDelete = async (id: string, options?: Parameters<typeof a
 
 
 
-export const getUserAPIKeyDeleteMutationKey = () => ['userAPIKeyDelete'] as const;
-
-export const getUserAPIKeyDeleteMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError,UserAPIKeyDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError,UserAPIKeyDeleteMutationVariables, TContext> => {
-
-const mutationKey = getUserAPIKeyDeleteMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userAPIKeyDelete>>, UserAPIKeyDeleteMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  userAPIKeyDelete(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UserAPIKeyDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyDelete>>>
-
-    export type UserAPIKeyDeleteMutationError = ErrorType<UnauthorizedResponse>
-    export type UserAPIKeyDeleteMutationVariables = {id: string}
-
-    /** @summary Delete API Key */
-export const useUserAPIKeyDelete = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError,UserAPIKeyDeleteMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof userAPIKeyDelete>>,
-        TError,
-        UserAPIKeyDeleteMutationVariables,
-        TContext
-      > => {
-      return useMutation(getUserAPIKeyDeleteMutationOptions(options), queryClient);
+export const getUserAPIKeyDeleteQueryKey = (id: string,) => {
+    return [
+    'DELETE', `/v1/users/self/api-keys/${id}`
+    ] as const;
     }
-    export const getUserSelfSettingsGetUrl = () => {
+
+
+export const getUserAPIKeyDeleteQueryOptions = <TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserAPIKeyDeleteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userAPIKeyDelete>>> = ({ signal }) => userAPIKeyDelete(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserAPIKeyDeleteQueryResult = NonNullable<Awaited<ReturnType<typeof userAPIKeyDelete>>>
+export type UserAPIKeyDeleteQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Delete API Key */
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userAPIKeyDelete>>,
+          TError,
+          Awaited<ReturnType<typeof userAPIKeyDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete API Key */
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userAPIKeyDelete>>,
+          TError,
+          Awaited<ReturnType<typeof userAPIKeyDelete>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete API Key */
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Delete API Key */
+export function useUserAPIKeyDelete<TData = Awaited<ReturnType<typeof userAPIKeyDelete>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userAPIKeyDelete>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserAPIKeyDeleteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getUserSelfSettingsGetUrl = () => {
 
 
 
@@ -667,6 +893,61 @@ export function useUserSelfSettingsGet<TData = Awaited<ReturnType<typeof userSel
 
 
 
+export const getUserSelfSettingsGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof userSelfSettingsGet>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserSelfSettingsGetQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userSelfSettingsGet>>> = ({ signal }) => userSelfSettingsGet({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type UserSelfSettingsGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof userSelfSettingsGet>>>
+export type UserSelfSettingsGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get user settings */
+export function useUserSelfSettingsGetSuspense<TData = Awaited<ReturnType<typeof userSelfSettingsGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get user settings */
+export function useUserSelfSettingsGetSuspense<TData = Awaited<ReturnType<typeof userSelfSettingsGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get user settings */
+export function useUserSelfSettingsGetSuspense<TData = Awaited<ReturnType<typeof userSelfSettingsGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get user settings */
+export function useUserSelfSettingsGetSuspense<TData = Awaited<ReturnType<typeof userSelfSettingsGet>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserSelfSettingsGetSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getUserSelfSettingsUpdateUrl = () => {
 
 
@@ -693,48 +974,77 @@ export const userSelfSettingsUpdate = async (userSelfSettingsUpdateBody: UserSel
 
 
 
-export const getUserSelfSettingsUpdateMutationKey = () => ['userSelfSettingsUpdate'] as const;
-
-export const getUserSelfSettingsUpdateMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError,UserSelfSettingsUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError,UserSelfSettingsUpdateMutationVariables, TContext> => {
-
-const mutationKey = getUserSelfSettingsUpdateMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, UserSelfSettingsUpdateMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  userSelfSettingsUpdate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UserSelfSettingsUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof userSelfSettingsUpdate>>>
-    export type UserSelfSettingsUpdateMutationBody = UserSelfSettingsUpdateBody
-    export type UserSelfSettingsUpdateMutationError = ErrorType<UnauthorizedResponse>
-    export type UserSelfSettingsUpdateMutationVariables = {data: UserSelfSettingsUpdateBody}
-
-    /** @summary Update user settings */
-export const useUserSelfSettingsUpdate = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError,UserSelfSettingsUpdateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof userSelfSettingsUpdate>>,
-        TError,
-        UserSelfSettingsUpdateMutationVariables,
-        TContext
-      > => {
-      return useMutation(getUserSelfSettingsUpdateMutationOptions(options), queryClient);
+export const getUserSelfSettingsUpdateQueryKey = (userSelfSettingsUpdateBody?: UserSelfSettingsUpdateBody,) => {
+    return [
+    'PUT', `/v1/users/self/settings`, userSelfSettingsUpdateBody
+    ] as const;
     }
+
+
+export const getUserSelfSettingsUpdateQueryOptions = <TData = Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError = ErrorType<UnauthorizedResponse>>(userSelfSettingsUpdateBody: UserSelfSettingsUpdateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserSelfSettingsUpdateQueryKey(userSelfSettingsUpdateBody);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userSelfSettingsUpdate>>> = ({ signal }) => userSelfSettingsUpdate(userSelfSettingsUpdateBody, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserSelfSettingsUpdateQueryResult = NonNullable<Awaited<ReturnType<typeof userSelfSettingsUpdate>>>
+export type UserSelfSettingsUpdateQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Update user settings */
+export function useUserSelfSettingsUpdate<TData = Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ userSelfSettingsUpdateBody: UserSelfSettingsUpdateBody, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfSettingsUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfSettingsUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update user settings */
+export function useUserSelfSettingsUpdate<TData = Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ userSelfSettingsUpdateBody: UserSelfSettingsUpdateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userSelfSettingsUpdate>>,
+          TError,
+          Awaited<ReturnType<typeof userSelfSettingsUpdate>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update user settings */
+export function useUserSelfSettingsUpdate<TData = Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ userSelfSettingsUpdateBody: UserSelfSettingsUpdateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Update user settings */
+export function useUserSelfSettingsUpdate<TData = Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError = ErrorType<UnauthorizedResponse>>(
+ userSelfSettingsUpdateBody: UserSelfSettingsUpdateBody, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userSelfSettingsUpdate>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserSelfSettingsUpdateQueryOptions(userSelfSettingsUpdateBody,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

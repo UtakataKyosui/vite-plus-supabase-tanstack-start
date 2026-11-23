@@ -2241,7 +2241,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/v1.APISummary"
-      operationId: base
+      operationId: getStatus
       security: []
   /v1/tags:
     get:

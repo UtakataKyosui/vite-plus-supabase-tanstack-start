@@ -9,7 +9,9 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
@@ -20,7 +22,9 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -156,6 +160,61 @@ export function useAssetGet<TData = Awaited<ReturnType<typeof assetGet>>, TError
 
 
 
+export const getAssetGetSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof assetGet>>, TError = ErrorType<UnauthorizedResponse>>(id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAssetGetQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof assetGet>>> = ({ signal }) => assetGet(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type AssetGetSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof assetGet>>>
+export type AssetGetSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Item by Asset ID */
+export function useAssetGetSuspense<TData = Awaited<ReturnType<typeof assetGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item by Asset ID */
+export function useAssetGetSuspense<TData = Awaited<ReturnType<typeof assetGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item by Asset ID */
+export function useAssetGetSuspense<TData = Awaited<ReturnType<typeof assetGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item by Asset ID */
+export function useAssetGetSuspense<TData = Awaited<ReturnType<typeof assetGet>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof assetGet>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAssetGetSuspenseQueryOptions(id,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGetAssetLabelUrl = (id: string,
     params?: GetAssetLabelParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -262,6 +321,66 @@ export function useGetAssetLabel<TData = Awaited<ReturnType<typeof getAssetLabel
   const queryOptions = getGetAssetLabelQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGetAssetLabelSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getAssetLabel>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: GetAssetLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAssetLabelQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAssetLabel>>> = ({ signal }) => getAssetLabel(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GetAssetLabelSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getAssetLabel>>>
+export type GetAssetLabelSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Asset label */
+export function useGetAssetLabelSuspense<TData = Awaited<ReturnType<typeof getAssetLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  GetAssetLabelParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Asset label */
+export function useGetAssetLabelSuspense<TData = Awaited<ReturnType<typeof getAssetLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetAssetLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Asset label */
+export function useGetAssetLabelSuspense<TData = Awaited<ReturnType<typeof getAssetLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetAssetLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Asset label */
+export function useGetAssetLabelSuspense<TData = Awaited<ReturnType<typeof getAssetLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetAssetLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getAssetLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAssetLabelSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
@@ -386,6 +505,66 @@ export function useGetItemLabel<TData = Awaited<ReturnType<typeof getItemLabel>>
 
 
 
+export const getGetItemLabelSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getItemLabel>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: GetItemLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetItemLabelQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getItemLabel>>> = ({ signal }) => getItemLabel(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GetItemLabelSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getItemLabel>>>
+export type GetItemLabelSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Item label */
+export function useGetItemLabelSuspense<TData = Awaited<ReturnType<typeof getItemLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  GetItemLabelParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item label */
+export function useGetItemLabelSuspense<TData = Awaited<ReturnType<typeof getItemLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetItemLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item label */
+export function useGetItemLabelSuspense<TData = Awaited<ReturnType<typeof getItemLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetItemLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Item label */
+export function useGetItemLabelSuspense<TData = Awaited<ReturnType<typeof getItemLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetItemLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getItemLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetItemLabelSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getProductSearchFromBarcodeUrl = (params?: ProductSearchFromBarcodeParams,) => {
   const normalizedParams = new URLSearchParams();
 
@@ -493,6 +672,61 @@ export function useProductSearchFromBarcode<TData = Awaited<ReturnType<typeof pr
 
 
 
+export const getProductSearchFromBarcodeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof productSearchFromBarcode>>, TError = ErrorType<UnauthorizedResponse>>(params?: ProductSearchFromBarcodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProductSearchFromBarcodeQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof productSearchFromBarcode>>> = ({ signal }) => productSearchFromBarcode(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type ProductSearchFromBarcodeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof productSearchFromBarcode>>>
+export type ProductSearchFromBarcodeSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Search EAN from Barcode */
+export function useProductSearchFromBarcodeSuspense<TData = Awaited<ReturnType<typeof productSearchFromBarcode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params: undefined |  ProductSearchFromBarcodeParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Search EAN from Barcode */
+export function useProductSearchFromBarcodeSuspense<TData = Awaited<ReturnType<typeof productSearchFromBarcode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: ProductSearchFromBarcodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Search EAN from Barcode */
+export function useProductSearchFromBarcodeSuspense<TData = Awaited<ReturnType<typeof productSearchFromBarcode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: ProductSearchFromBarcodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Search EAN from Barcode */
+export function useProductSearchFromBarcodeSuspense<TData = Awaited<ReturnType<typeof productSearchFromBarcode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: ProductSearchFromBarcodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof productSearchFromBarcode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProductSearchFromBarcodeSuspenseQueryOptions(params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGenerateQRCodeUrl = (params?: GenerateQRCodeParams,) => {
   const normalizedParams = new URLSearchParams();
 
@@ -591,6 +825,61 @@ export function useGenerateQRCode<TData = Awaited<ReturnType<typeof generateQRCo
   const queryOptions = getGenerateQRCodeQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGenerateQRCodeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof generateQRCode>>, TError = ErrorType<UnauthorizedResponse>>(params?: GenerateQRCodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGenerateQRCodeQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof generateQRCode>>> = ({ signal }) => generateQRCode(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GenerateQRCodeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof generateQRCode>>>
+export type GenerateQRCodeSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Create QR Code */
+export function useGenerateQRCodeSuspense<TData = Awaited<ReturnType<typeof generateQRCode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params: undefined |  GenerateQRCodeParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create QR Code */
+export function useGenerateQRCodeSuspense<TData = Awaited<ReturnType<typeof generateQRCode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GenerateQRCodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create QR Code */
+export function useGenerateQRCodeSuspense<TData = Awaited<ReturnType<typeof generateQRCode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GenerateQRCodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Create QR Code */
+export function useGenerateQRCodeSuspense<TData = Awaited<ReturnType<typeof generateQRCode>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GenerateQRCodeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof generateQRCode>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGenerateQRCodeSuspenseQueryOptions(params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

@@ -9,7 +9,9 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
@@ -20,7 +22,9 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -149,6 +153,61 @@ export function useBillOfMaterialsExport<TData = Awaited<ReturnType<typeof billO
   const queryOptions = getBillOfMaterialsExportQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getBillOfMaterialsExportSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof billOfMaterialsExport>>, TError = ErrorType<UnauthorizedResponse>>(params?: BillOfMaterialsExportParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getBillOfMaterialsExportQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof billOfMaterialsExport>>> = ({ signal }) => billOfMaterialsExport(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type BillOfMaterialsExportSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof billOfMaterialsExport>>>
+export type BillOfMaterialsExportSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Export Bill of Materials */
+export function useBillOfMaterialsExportSuspense<TData = Awaited<ReturnType<typeof billOfMaterialsExport>>, TError = ErrorType<UnauthorizedResponse>>(
+ params: undefined |  BillOfMaterialsExportParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Export Bill of Materials */
+export function useBillOfMaterialsExportSuspense<TData = Awaited<ReturnType<typeof billOfMaterialsExport>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: BillOfMaterialsExportParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Export Bill of Materials */
+export function useBillOfMaterialsExportSuspense<TData = Awaited<ReturnType<typeof billOfMaterialsExport>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: BillOfMaterialsExportParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Export Bill of Materials */
+export function useBillOfMaterialsExportSuspense<TData = Awaited<ReturnType<typeof billOfMaterialsExport>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: BillOfMaterialsExportParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof billOfMaterialsExport>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getBillOfMaterialsExportSuspenseQueryOptions(params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

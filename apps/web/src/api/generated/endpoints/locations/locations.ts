@@ -9,7 +9,9 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
@@ -20,7 +22,9 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -157,6 +161,66 @@ export function useGetLocationLabel<TData = Awaited<ReturnType<typeof getLocatio
   const queryOptions = getGetLocationLabelQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGetLocationLabelSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getLocationLabel>>, TError = ErrorType<UnauthorizedResponse>>(id: string,
+    params?: GetLocationLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetLocationLabelQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLocationLabel>>> = ({ signal }) => getLocationLabel(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GetLocationLabelSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getLocationLabel>>>
+export type GetLocationLabelSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Location label */
+export function useGetLocationLabelSuspense<TData = Awaited<ReturnType<typeof getLocationLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params: undefined |  GetLocationLabelParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location label */
+export function useGetLocationLabelSuspense<TData = Awaited<ReturnType<typeof getLocationLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetLocationLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location label */
+export function useGetLocationLabelSuspense<TData = Awaited<ReturnType<typeof getLocationLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetLocationLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location label */
+export function useGetLocationLabelSuspense<TData = Awaited<ReturnType<typeof getLocationLabel>>, TError = ErrorType<UnauthorizedResponse>>(
+ id: string,
+    params?: GetLocationLabelParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getLocationLabel>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetLocationLabelSuspenseQueryOptions(id,params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

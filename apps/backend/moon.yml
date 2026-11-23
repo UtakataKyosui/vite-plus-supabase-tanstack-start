@@ -1,12 +1,23 @@
 $schema: "https://moonrepo.dev/schemas/project.json"
 
 language: "typescript"
-layer: "application"
+layer: "library"
 stack: "backend"
 
 tasks:
-  check:
-    command: "vp run check:openapi"
+  generate-schemas:
+    command: "vp run generate:schemas"
     inputs:
       - "openapi.yaml"
+      - "orval.config.ts"
+    outputs:
+      - "src/generated"
+
+  check:
+    command: "vp run check:all"
+    inputs:
+      - "openapi.yaml"
+      - "orval.config.ts"
+      - "src/**/*"
       - "package.json"
+      - "tsconfig.json"

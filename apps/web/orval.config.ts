@@ -16,6 +16,7 @@ export default defineConfig({
       override: {
         mutator: { path: "src/api/fetcher.ts", name: "apiFetch" },
         fetch: { includeHttpResponseReturnType: false },
+        query: { useQuery: true, useSuspenseQuery: true },
       },
     },
   },

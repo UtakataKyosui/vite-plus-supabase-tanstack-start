@@ -9,13 +9,18 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation
+  useQuery
 } from '@tanstack/react-query';
 import type {
-  MutationFunction,
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   QueryClient,
-  UseMutationOptions,
-  UseMutationResult
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -52,6 +57,21 @@ const getHeaders = (...sources: (RequestInit['headers'] | Record<string, string 
 };
 
 
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
+  const result = { queryKey } as T & { queryKey: K };
+  for (const key of Object.keys(query)) {
+    // The explicit queryKey always wins, matching the previous
+    // `{ ...query, queryKey }` spread where it was set last.
+    if (key === 'queryKey') continue;
+    Object.defineProperty(result, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => (query as Record<string, unknown>)[key],
+    });
+  }
+  return result;
+};
+
 export const getCreateMissingThumbnailsUrl = () => {
 
 
@@ -79,55 +99,93 @@ export const createMissingThumbnails = async ( options?: Parameters<typeof apiFe
 
 
 
-export const getCreateMissingThumbnailsMutationKey = () => ['createMissingThumbnails'] as const;
-
-export const getCreateMissingThumbnailsMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError,void, TContext> => {
-
-const mutationKey = getCreateMissingThumbnailsMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getCreateMissingThumbnailsQueryKey = () => {
+    return [
+    'POST', `/v1/actions/create-missing-thumbnails`
+    ] as const;
+    }
 
 
+export const getCreateMissingThumbnailsQueryOptions = <TData = Awaited<ReturnType<typeof createMissingThumbnails>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCreateMissingThumbnailsQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createMissingThumbnails>>, void> = () => {
 
-
-          return  createMissingThumbnails(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof createMissingThumbnails>>> = ({ signal }) => createMissingThumbnails({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateMissingThumbnailsMutationResult = NonNullable<Awaited<ReturnType<typeof createMissingThumbnails>>>
-
-    export type CreateMissingThumbnailsMutationError = ErrorType<UnauthorizedResponse>
+export type CreateMissingThumbnailsQueryResult = NonNullable<Awaited<ReturnType<typeof createMissingThumbnails>>>
+export type CreateMissingThumbnailsQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Creates thumbnails for items that are missing them
  * @summary Create Missing Thumbnails
  */
-export const useCreateMissingThumbnails = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createMissingThumbnails>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCreateMissingThumbnailsMutationOptions(options), queryClient);
-    }
-    export const getEnsureAssetIDUrl = () => {
+export function useCreateMissingThumbnails<TData = Awaited<ReturnType<typeof createMissingThumbnails>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createMissingThumbnails>>,
+          TError,
+          Awaited<ReturnType<typeof createMissingThumbnails>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates thumbnails for items that are missing them
+ * @summary Create Missing Thumbnails
+ */
+export function useCreateMissingThumbnails<TData = Awaited<ReturnType<typeof createMissingThumbnails>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createMissingThumbnails>>,
+          TError,
+          Awaited<ReturnType<typeof createMissingThumbnails>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates thumbnails for items that are missing them
+ * @summary Create Missing Thumbnails
+ */
+export function useCreateMissingThumbnails<TData = Awaited<ReturnType<typeof createMissingThumbnails>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Creates thumbnails for items that are missing them
+ * @summary Create Missing Thumbnails
+ */
+export function useCreateMissingThumbnails<TData = Awaited<ReturnType<typeof createMissingThumbnails>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createMissingThumbnails>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCreateMissingThumbnailsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEnsureAssetIDUrl = () => {
 
 
 
@@ -154,55 +212,93 @@ export const ensureAssetID = async ( options?: Parameters<typeof apiFetch>[1]): 
 
 
 
-export const getEnsureAssetIDMutationKey = () => ['ensureAssetID'] as const;
-
-export const getEnsureAssetIDMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError,void, TContext> => {
-
-const mutationKey = getEnsureAssetIDMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getEnsureAssetIDQueryKey = () => {
+    return [
+    'POST', `/v1/actions/ensure-asset-ids`
+    ] as const;
+    }
 
 
+export const getEnsureAssetIDQueryOptions = <TData = Awaited<ReturnType<typeof ensureAssetID>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEnsureAssetIDQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof ensureAssetID>>, void> = () => {
 
-
-          return  ensureAssetID(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof ensureAssetID>>> = ({ signal }) => ensureAssetID({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EnsureAssetIDMutationResult = NonNullable<Awaited<ReturnType<typeof ensureAssetID>>>
-
-    export type EnsureAssetIDMutationError = ErrorType<UnauthorizedResponse>
+export type EnsureAssetIDQueryResult = NonNullable<Awaited<ReturnType<typeof ensureAssetID>>>
+export type EnsureAssetIDQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Ensures all items in the database have an asset ID
  * @summary Ensure Asset IDs
  */
-export const useEnsureAssetID = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof ensureAssetID>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getEnsureAssetIDMutationOptions(options), queryClient);
-    }
-    export const getEnsureImportRefsUrl = () => {
+export function useEnsureAssetID<TData = Awaited<ReturnType<typeof ensureAssetID>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ensureAssetID>>,
+          TError,
+          Awaited<ReturnType<typeof ensureAssetID>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an asset ID
+ * @summary Ensure Asset IDs
+ */
+export function useEnsureAssetID<TData = Awaited<ReturnType<typeof ensureAssetID>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ensureAssetID>>,
+          TError,
+          Awaited<ReturnType<typeof ensureAssetID>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an asset ID
+ * @summary Ensure Asset IDs
+ */
+export function useEnsureAssetID<TData = Awaited<ReturnType<typeof ensureAssetID>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an asset ID
+ * @summary Ensure Asset IDs
+ */
+export function useEnsureAssetID<TData = Awaited<ReturnType<typeof ensureAssetID>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureAssetID>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEnsureAssetIDQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEnsureImportRefsUrl = () => {
 
 
 
@@ -229,55 +325,93 @@ export const ensureImportRefs = async ( options?: Parameters<typeof apiFetch>[1]
 
 
 
-export const getEnsureImportRefsMutationKey = () => ['ensureImportRefs'] as const;
-
-export const getEnsureImportRefsMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError,void, TContext> => {
-
-const mutationKey = getEnsureImportRefsMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getEnsureImportRefsQueryKey = () => {
+    return [
+    'POST', `/v1/actions/ensure-import-refs`
+    ] as const;
+    }
 
 
+export const getEnsureImportRefsQueryOptions = <TData = Awaited<ReturnType<typeof ensureImportRefs>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEnsureImportRefsQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof ensureImportRefs>>, void> = () => {
 
-
-          return  ensureImportRefs(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof ensureImportRefs>>> = ({ signal }) => ensureImportRefs({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EnsureImportRefsMutationResult = NonNullable<Awaited<ReturnType<typeof ensureImportRefs>>>
-
-    export type EnsureImportRefsMutationError = ErrorType<UnauthorizedResponse>
+export type EnsureImportRefsQueryResult = NonNullable<Awaited<ReturnType<typeof ensureImportRefs>>>
+export type EnsureImportRefsQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Ensures all items in the database have an import ref
  * @summary Ensures Import Refs
  */
-export const useEnsureImportRefs = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof ensureImportRefs>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getEnsureImportRefsMutationOptions(options), queryClient);
-    }
-    export const getSetPrimaryPhotosUrl = () => {
+export function useEnsureImportRefs<TData = Awaited<ReturnType<typeof ensureImportRefs>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ensureImportRefs>>,
+          TError,
+          Awaited<ReturnType<typeof ensureImportRefs>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an import ref
+ * @summary Ensures Import Refs
+ */
+export function useEnsureImportRefs<TData = Awaited<ReturnType<typeof ensureImportRefs>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ensureImportRefs>>,
+          TError,
+          Awaited<ReturnType<typeof ensureImportRefs>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an import ref
+ * @summary Ensures Import Refs
+ */
+export function useEnsureImportRefs<TData = Awaited<ReturnType<typeof ensureImportRefs>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Ensures all items in the database have an import ref
+ * @summary Ensures Import Refs
+ */
+export function useEnsureImportRefs<TData = Awaited<ReturnType<typeof ensureImportRefs>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ensureImportRefs>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getEnsureImportRefsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getSetPrimaryPhotosUrl = () => {
 
 
 
@@ -304,55 +438,93 @@ export const setPrimaryPhotos = async ( options?: Parameters<typeof apiFetch>[1]
 
 
 
-export const getSetPrimaryPhotosMutationKey = () => ['setPrimaryPhotos'] as const;
-
-export const getSetPrimaryPhotosMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError,void, TContext> => {
-
-const mutationKey = getSetPrimaryPhotosMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getSetPrimaryPhotosQueryKey = () => {
+    return [
+    'POST', `/v1/actions/set-primary-photos`
+    ] as const;
+    }
 
 
+export const getSetPrimaryPhotosQueryOptions = <TData = Awaited<ReturnType<typeof setPrimaryPhotos>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSetPrimaryPhotosQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setPrimaryPhotos>>, void> = () => {
 
-
-          return  setPrimaryPhotos(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof setPrimaryPhotos>>> = ({ signal }) => setPrimaryPhotos({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type SetPrimaryPhotosMutationResult = NonNullable<Awaited<ReturnType<typeof setPrimaryPhotos>>>
-
-    export type SetPrimaryPhotosMutationError = ErrorType<UnauthorizedResponse>
+export type SetPrimaryPhotosQueryResult = NonNullable<Awaited<ReturnType<typeof setPrimaryPhotos>>>
+export type SetPrimaryPhotosQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Sets the first photo of each item as the primary photo
  * @summary Set Primary Photos
  */
-export const useSetPrimaryPhotos = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof setPrimaryPhotos>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getSetPrimaryPhotosMutationOptions(options), queryClient);
-    }
-    export const getWipeInventoryUrl = () => {
+export function useSetPrimaryPhotos<TData = Awaited<ReturnType<typeof setPrimaryPhotos>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof setPrimaryPhotos>>,
+          TError,
+          Awaited<ReturnType<typeof setPrimaryPhotos>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Sets the first photo of each item as the primary photo
+ * @summary Set Primary Photos
+ */
+export function useSetPrimaryPhotos<TData = Awaited<ReturnType<typeof setPrimaryPhotos>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof setPrimaryPhotos>>,
+          TError,
+          Awaited<ReturnType<typeof setPrimaryPhotos>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Sets the first photo of each item as the primary photo
+ * @summary Set Primary Photos
+ */
+export function useSetPrimaryPhotos<TData = Awaited<ReturnType<typeof setPrimaryPhotos>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Sets the first photo of each item as the primary photo
+ * @summary Set Primary Photos
+ */
+export function useSetPrimaryPhotos<TData = Awaited<ReturnType<typeof setPrimaryPhotos>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof setPrimaryPhotos>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSetPrimaryPhotosQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getWipeInventoryUrl = () => {
 
 
 
@@ -379,55 +551,93 @@ export const wipeInventory = async (v1WipeInventoryOptions?: V1WipeInventoryOpti
 
 
 
-export const getWipeInventoryMutationKey = () => ['wipeInventory'] as const;
-
-export const getWipeInventoryMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof wipeInventory>>, TError,WipeInventoryMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof wipeInventory>>, TError,WipeInventoryMutationVariables, TContext> => {
-
-const mutationKey = getWipeInventoryMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getWipeInventoryQueryKey = (v1WipeInventoryOptions?: V1WipeInventoryOptions,) => {
+    return [
+    'POST', `/v1/actions/wipe-inventory`, v1WipeInventoryOptions
+    ] as const;
+    }
 
 
+export const getWipeInventoryQueryOptions = <TData = Awaited<ReturnType<typeof wipeInventory>>, TError = ErrorType<UnauthorizedResponse>>(v1WipeInventoryOptions?: V1WipeInventoryOptions, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getWipeInventoryQueryKey(v1WipeInventoryOptions);
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof wipeInventory>>, WipeInventoryMutationVariables> = (props) => {
-          const {data} = props ?? {};
 
-          return  wipeInventory(data,requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof wipeInventory>>> = ({ signal }) => wipeInventory(v1WipeInventoryOptions, { signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
+export type WipeInventoryQueryResult = NonNullable<Awaited<ReturnType<typeof wipeInventory>>>
+export type WipeInventoryQueryError = ErrorType<UnauthorizedResponse>
 
-    export type WipeInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof wipeInventory>>>
-    export type WipeInventoryMutationBody = V1WipeInventoryOptions | undefined
-    export type WipeInventoryMutationError = ErrorType<UnauthorizedResponse>
-    export type WipeInventoryMutationVariables = {data?: V1WipeInventoryOptions}
 
-    /**
+/**
  * Deletes all items in the inventory
  * @summary Wipe Inventory
  */
-export const useWipeInventory = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof wipeInventory>>, TError,WipeInventoryMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof wipeInventory>>,
-        TError,
-        WipeInventoryMutationVariables,
-        TContext
-      > => {
-      return useMutation(getWipeInventoryMutationOptions(options), queryClient);
-    }
-    export const getItemDateZeroOutUrl = () => {
+export function useWipeInventory<TData = Awaited<ReturnType<typeof wipeInventory>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1WipeInventoryOptions: undefined |  V1WipeInventoryOptions, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof wipeInventory>>,
+          TError,
+          Awaited<ReturnType<typeof wipeInventory>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes all items in the inventory
+ * @summary Wipe Inventory
+ */
+export function useWipeInventory<TData = Awaited<ReturnType<typeof wipeInventory>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1WipeInventoryOptions?: V1WipeInventoryOptions, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof wipeInventory>>,
+          TError,
+          Awaited<ReturnType<typeof wipeInventory>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes all items in the inventory
+ * @summary Wipe Inventory
+ */
+export function useWipeInventory<TData = Awaited<ReturnType<typeof wipeInventory>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1WipeInventoryOptions?: V1WipeInventoryOptions, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Deletes all items in the inventory
+ * @summary Wipe Inventory
+ */
+export function useWipeInventory<TData = Awaited<ReturnType<typeof wipeInventory>>, TError = ErrorType<UnauthorizedResponse>>(
+ v1WipeInventoryOptions?: V1WipeInventoryOptions, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof wipeInventory>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getWipeInventoryQueryOptions(v1WipeInventoryOptions,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getItemDateZeroOutUrl = () => {
 
 
 
@@ -454,51 +664,89 @@ export const itemDateZeroOut = async ( options?: Parameters<typeof apiFetch>[1])
 
 
 
-export const getItemDateZeroOutMutationKey = () => ['itemDateZeroOut'] as const;
-
-export const getItemDateZeroOutMutationOptions = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError,void, TContext> => {
-
-const mutationKey = getItemDateZeroOutMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+export const getItemDateZeroOutQueryKey = () => {
+    return [
+    'POST', `/v1/actions/zero-item-time-fields`
+    ] as const;
+    }
 
 
+export const getItemDateZeroOutQueryOptions = <TData = Awaited<ReturnType<typeof itemDateZeroOut>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getItemDateZeroOutQueryKey();
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof itemDateZeroOut>>, void> = () => {
 
-
-          return  itemDateZeroOut(requestOptions)
-        }
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof itemDateZeroOut>>> = ({ signal }) => itemDateZeroOut({ signal, ...requestOptions });
 
 
 
 
 
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ItemDateZeroOutMutationResult = NonNullable<Awaited<ReturnType<typeof itemDateZeroOut>>>
-
-    export type ItemDateZeroOutMutationError = ErrorType<UnauthorizedResponse>
+export type ItemDateZeroOutQueryResult = NonNullable<Awaited<ReturnType<typeof itemDateZeroOut>>>
+export type ItemDateZeroOutQueryError = ErrorType<UnauthorizedResponse>
 
 
-    /**
+/**
  * Resets all item date fields to the beginning of the day
  * @summary Zero Out Time Fields
  */
-export const useItemDateZeroOut = <TError = ErrorType<UnauthorizedResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof itemDateZeroOut>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getItemDateZeroOutMutationOptions(options), queryClient);
-    }
+export function useItemDateZeroOut<TData = Awaited<ReturnType<typeof itemDateZeroOut>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof itemDateZeroOut>>,
+          TError,
+          Awaited<ReturnType<typeof itemDateZeroOut>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Resets all item date fields to the beginning of the day
+ * @summary Zero Out Time Fields
+ */
+export function useItemDateZeroOut<TData = Awaited<ReturnType<typeof itemDateZeroOut>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof itemDateZeroOut>>,
+          TError,
+          Awaited<ReturnType<typeof itemDateZeroOut>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Resets all item date fields to the beginning of the day
+ * @summary Zero Out Time Fields
+ */
+export function useItemDateZeroOut<TData = Awaited<ReturnType<typeof itemDateZeroOut>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Resets all item date fields to the beginning of the day
+ * @summary Zero Out Time Fields
+ */
+export function useItemDateZeroOut<TData = Awaited<ReturnType<typeof itemDateZeroOut>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof itemDateZeroOut>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getItemDateZeroOutQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

@@ -9,7 +9,9 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useQuery
+  queryOptions as queryOptionsBuilder,
+  useQuery,
+  useSuspenseQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
@@ -20,7 +22,9 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -154,6 +158,61 @@ export function useGroupStatistics<TData = Awaited<ReturnType<typeof groupStatis
 
 
 
+export const getGroupStatisticsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupStatistics>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupStatisticsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupStatistics>>> = ({ signal }) => groupStatistics({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupStatisticsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupStatistics>>>
+export type GroupStatisticsSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Group Statistics */
+export function useGroupStatisticsSuspense<TData = Awaited<ReturnType<typeof groupStatistics>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group Statistics */
+export function useGroupStatisticsSuspense<TData = Awaited<ReturnType<typeof groupStatistics>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group Statistics */
+export function useGroupStatisticsSuspense<TData = Awaited<ReturnType<typeof groupStatistics>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Group Statistics */
+export function useGroupStatisticsSuspense<TData = Awaited<ReturnType<typeof groupStatistics>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatistics>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupStatisticsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGroupStatisticsLocationsUrl = () => {
 
 
@@ -245,6 +304,61 @@ export function useGroupStatisticsLocations<TData = Awaited<ReturnType<typeof gr
   const queryOptions = getGroupStatisticsLocationsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupStatisticsLocationsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupStatisticsLocations>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupStatisticsLocationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupStatisticsLocations>>> = ({ signal }) => groupStatisticsLocations({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupStatisticsLocationsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupStatisticsLocations>>>
+export type GroupStatisticsLocationsSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Location Statistics */
+export function useGroupStatisticsLocationsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location Statistics */
+export function useGroupStatisticsLocationsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location Statistics */
+export function useGroupStatisticsLocationsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Location Statistics */
+export function useGroupStatisticsLocationsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsLocations>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsLocations>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupStatisticsLocationsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
@@ -361,6 +475,61 @@ export function useGroupStatisticsPriceOverTime<TData = Awaited<ReturnType<typeo
 
 
 
+export const getGroupStatisticsPriceOverTimeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError = ErrorType<UnauthorizedResponse>>(params?: GroupStatisticsPriceOverTimeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupStatisticsPriceOverTimeQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>> = ({ signal }) => groupStatisticsPriceOverTime(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupStatisticsPriceOverTimeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>>
+export type GroupStatisticsPriceOverTimeSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Purchase Price Statistics */
+export function useGroupStatisticsPriceOverTimeSuspense<TData = Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError = ErrorType<UnauthorizedResponse>>(
+ params: undefined |  GroupStatisticsPriceOverTimeParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Purchase Price Statistics */
+export function useGroupStatisticsPriceOverTimeSuspense<TData = Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GroupStatisticsPriceOverTimeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Purchase Price Statistics */
+export function useGroupStatisticsPriceOverTimeSuspense<TData = Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GroupStatisticsPriceOverTimeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Purchase Price Statistics */
+export function useGroupStatisticsPriceOverTimeSuspense<TData = Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError = ErrorType<UnauthorizedResponse>>(
+ params?: GroupStatisticsPriceOverTimeParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsPriceOverTime>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupStatisticsPriceOverTimeSuspenseQueryOptions(params,options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const getGroupStatisticsTagsUrl = () => {
 
 
@@ -452,6 +621,61 @@ export function useGroupStatisticsTags<TData = Awaited<ReturnType<typeof groupSt
   const queryOptions = getGroupStatisticsTagsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getGroupStatisticsTagsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof groupStatisticsTags>>, TError = ErrorType<UnauthorizedResponse>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGroupStatisticsTagsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof groupStatisticsTags>>> = ({ signal }) => groupStatisticsTags({ signal, ...requestOptions });
+
+
+
+
+
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+}
+
+export type GroupStatisticsTagsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof groupStatisticsTags>>>
+export type GroupStatisticsTagsSuspenseQueryError = ErrorType<UnauthorizedResponse>
+
+
+/** @summary Get Tags Statistics */
+export function useGroupStatisticsTagsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsTags>>, TError = ErrorType<UnauthorizedResponse>>(
+  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tags Statistics */
+export function useGroupStatisticsTagsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsTags>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tags Statistics */
+export function useGroupStatisticsTagsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsTags>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get Tags Statistics */
+export function useGroupStatisticsTagsSuspense<TData = Awaited<ReturnType<typeof groupStatisticsTags>>, TError = ErrorType<UnauthorizedResponse>>(
+  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof groupStatisticsTags>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGroupStatisticsTagsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
