@@ -53,10 +53,7 @@ export function BarcodeResults({ products }: { products: RepoBarcodeProduct[] })
                       product.search_engine_name}
                   </p>
                 </div>
-                <Button
-                  size="sm"
-                  render={<Link to="/items/new" search={toDraftSearch(product) as never} />}
-                >
+                <Button size="sm" render={<Link to="/items/new" search={toDraftSearch(product)} />}>
                   <PackagePlus />
                   Use
                 </Button>

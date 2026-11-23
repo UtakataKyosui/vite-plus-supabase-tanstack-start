@@ -157,12 +157,16 @@ function Section({
   );
 }
 
-export function ItemForm() {
+export type ItemDraft = Partial<
+  Pick<FormState, "name" | "description" | "manufacturer" | "modelNumber" | "notes">
+>;
+
+export function ItemForm({ draft }: { draft?: ItemDraft }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileInput = useRef<HTMLInputElement>(null);
   const nextFieldId = useRef(1);
-  const [form, setForm] = useState<FormState>(INITIAL);
+  const [form, setForm] = useState<FormState>(() => ({ ...INITIAL, ...draft }));
   const [files, setFiles] = useState<File[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [partial, setPartial] = useState<{ id: string; message: string } | null>(null);

@@ -26,6 +26,28 @@ Stitch プロジェクト「Smart Box」にデザインを作成している。
 | Tools                          | `040b1bb4eb2e46e5876feb4fae489783` | `/v1/group/import`、`/v1/group/exports`、`/v1/actions/*`、`/v1/reporting/bill-of-materials` |
 | Profile & Settings             | `7cc800dbf0374961bfeb40bd237db15a` | `/v1/users/self*`、`/v1/users/self/api-keys`、`/v1/notifiers`                               |
 
+## 実装状況
+
+画面は `apps/web/src/routes/_authed/` に実装済み。部品は `apps/web/src/components/<機能名>/`、共通レイアウトは `components/layout/`。
+
+| 画面                           | ルート                                             |
+| ------------------------------ | -------------------------------------------------- |
+| Dashboard                      | `/dashboard`                                       |
+| Items / New Item / Item Detail | `/items`、`/items/new`、`/items/$itemId`           |
+| Locations / Location Detail    | `/locations`、`/locations/$locationId`             |
+| Tags                           | `/tags`                                            |
+| Label Templates / Detail       | `/label-templates`、`/label-templates/$templateId` |
+| Item Templates                 | `/item-templates`                                  |
+| Entity Types                   | `/entity-types`                                    |
+| Maintenance                    | `/maintenance`                                     |
+| Tools                          | `/tools`                                           |
+| Group Settings                 | `/group`                                           |
+| Profile & Settings             | `/profile`                                         |
+| Scan                           | `/scan`                                            |
+| Sign in / Sign up              | `/login`、`/signup`                                |
+
+Stitch のスクリーンショットとの突き合わせは未実施の画面が多い。Entity Types、Scan、Sign in / Sign up は Stitch 画面が無いまま設計した。
+
 ## 生成待ち
 
 生成を依頼済みだが、まだ `list_screens` に現れていない画面。
