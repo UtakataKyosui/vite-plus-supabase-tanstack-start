@@ -1,0 +1,14 @@
+{
+  "name": "backend",
+  "private": true,
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "check:openapi": "redocly lint openapi.yaml",
+    "sync:openapi": "node scripts/sync-openapi.mjs"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.82.0",
+    "yaml": "^2.9.1"
+  }
+}

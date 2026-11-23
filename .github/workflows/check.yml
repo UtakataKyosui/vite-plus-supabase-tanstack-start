@@ -35,6 +35,7 @@ jobs:
               - '**/biome.json'
               - '**/.fallowrc.json'
               - '**/moon.yml'
+              - 'apps/backend/openapi.yaml'
               - '.moon/**'
               - '.prototools'
               - '.github/workflows/check.yml'
