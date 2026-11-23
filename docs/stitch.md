@@ -8,11 +8,19 @@ Stitch プロジェクト「Smart Box」にデザインを作成している。
 
 ## 画面
 
-| 画面                | 対応する API                                  |
-| ------------------- | --------------------------------------------- |
-| Smart Box Dashboard | `/v1/groups/statistics*`                      |
-| Items               | `/v1/entities`                                |
-| Item Detail         | `/v1/entities/{id}`、attachments、maintenance |
+| 画面                           | 対応する API                                                                                                                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Smart Box Dashboard            | `/v1/groups/statistics*`                                                                                                                                                                    |
+| Items                          | `/v1/entities`                                                                                                                                                                              |
+| Item Detail                    | `/v1/entities/{id}`、attachments、maintenance                                                                                                                                               |
+| Label Template Detail & Editor | `/v1/label-templates/{id}`、`render*`、`print*`（画面 ID `b5c1454bbf0d490eac1a0317ab763dda`。`get_screen` では取れるが、キャンバスの `screenInstances` と `list_screens` には載っていない） |
+
+## 未生成
+
+- Item 作成・編集フォーム
+- Location 詳細
+- Group 設定（Members と招待ダイアログ）
+- Label Templates 一覧
 
 ## 運用
 
