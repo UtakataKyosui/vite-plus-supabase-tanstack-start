@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader } from "~/components/layout/page-header";
+import { LabelTemplateEditor } from "~/components/label-templates/label-template-editor";
 
 export const Route = createFileRoute("/_authed/label-templates/$templateId")({
-  component: LabelTemplatesTemplateidPage,
+  component: LabelTemplateDetailPage,
 });
 
-function LabelTemplatesTemplateidPage() {
-  return <PageHeader title="Label Template" description="Label template details." />;
+function LabelTemplateDetailPage() {
+  const { templateId } = Route.useParams();
+  return <LabelTemplateEditor templateId={templateId} />;
 }
