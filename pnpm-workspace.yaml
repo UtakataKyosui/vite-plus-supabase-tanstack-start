@@ -25,6 +25,8 @@ permissions:
     skills: [router-query, migrate-from-react-router, react-router]
   "@tanstack/react-start":
     skills: [migrate-from-nextjs, react-start]
+  esbuild:
+    build: true
 skills:
   dirs:
     - .agent/skills
